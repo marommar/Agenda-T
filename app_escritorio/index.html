@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luxe Salon — Gestión Profesional</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0a0a0f; --bg2:#111118; --bg3:#1a1a24;
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+  --accent:#a78bfa; --accent2:#7c3aed; --accent3:#c4b5fd;
+  --green:#34d399; --red:#f87171; --amber:#fbbf24;
+  --text:#f1f0ff; --text2:#a09bb8; --text3:#6b6585;
+  --glass:rgba(255,255,255,0.04); --glass2:rgba(255,255,255,0.08);
+  --r:12px; --rl:18px; --sw:240px; --th:56px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
+
+/* ─── TITLEBAR ─── */
+#titlebar{
+  height:var(--th);background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 0 0 16px;gap:10px;
+  flex-shrink:0;position:relative;z-index:20;
+}
+.app-logo{display:flex;align-items:center;gap:8px;-webkit-app-region:no-drag;}
+.app-logo-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--accent2),var(--accent));display:flex;align-items:center;justify-content:center;}
+.app-logo-icon .material-symbols-rounded{font-size:16px;color:#fff;}
+.app-logo-name{font-size:13px;font-weight:800;letter-spacing:-0.2px;}
+.page-crumb{font-size:12px;color:var(--text3);-webkit-app-region:no-drag;}
+.tb-drag{flex:1;height:100%;-webkit-app-region:drag;}
+.win-controls{display:flex;-webkit-app-region:no-drag;}
+.wc-btn{width:40px;height:var(--th);display:flex;align-items:center;justify-content:center;background:transparent;border:none;cursor:pointer;color:var(--text3);transition:background .12s,color .12s;}
+.wc-btn:hover{background:var(--glass2);color:var(--text);}
+.wc-btn.wc-close:hover{background:#e81123;color:#fff;}
+.wc-btn .material-symbols-rounded{font-size:17px;}
+
+/* ─── LAYOUT ─── */
+#layout{display:flex;flex:1;overflow:hidden;}
+
+/* ─── SIDEBAR ─── */
+#sidebar{width:var(--sw);height:100%;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:12px 10px;flex-shrink:0;overflow-y:auto;transition:width .2s;}
+.nav-section{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;padding:12px 10px 5px;white-space:nowrap;overflow:hidden;}
+.nav-link{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;transition:all .12s;border:none;background:transparent;width:100%;text-align:left;white-space:nowrap;overflow:hidden;}
+.nav-link:hover{background:var(--glass2);color:var(--text);}
+.nav-link.active{background:linear-gradient(135deg,rgba(167,139,250,.18),rgba(124,58,237,.12));color:var(--accent3);border:1px solid rgba(167,139,250,.2);}
+.nav-link .material-symbols-rounded{font-size:18px;flex-shrink:0;}
+.nav-link-label{overflow:hidden;max-width:160px;}
+.nav-badge{margin-left:auto;background:var(--green);color:#000;font-size:9px;font-weight:700;padding:2px 6px;border-radius:99px;flex-shrink:0;}
+.sidebar-bottom{margin-top:auto;border-top:1px solid var(--border);padding-top:10px;}
+
+/* ─── CONTENT ─── */
+#content-wrap{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+#content{flex:1;overflow-y:auto;padding:22px;}
+
+/* ─── PAGE ─── */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px;}
+.page-title{font-size:20px;font-weight:800;letter-spacing:-.3px;}
+.page-sub{font-size:12px;color:var(--text3);margin-top:2px;}
+.section-title{font-size:13px;font-weight:700;margin-bottom:12px;}
+
+/* ─── GRIDS ─── */
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.grid-2-1{display:grid;grid-template-columns:1fr 340px;gap:16px;}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.mb-20{margin-bottom:20px;}
+
+/* ─── STAT CARD ─── */
+.stat-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:18px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--glow,rgba(167,139,250,.05)),transparent 60%);}
+.stat-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
+.stat-icon .material-symbols-rounded{font-size:18px;}
+.stat-value{font-size:22px;font-weight:800;letter-spacing:-.5px;}
+.stat-label{font-size:11px;color:var(--text3);font-weight:500;margin-top:2px;}
+.stat-change{font-size:10px;font-weight:600;margin-top:6px;display:flex;align-items:center;gap:3px;}
+.stat-change.up{color:var(--green);}
+.stat-change .material-symbols-rounded{font-size:12px;}
+
+/* ─── CARD ─── */
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:20px;}
+
+/* ─── CALENDAR ─── */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.cal-month{font-size:14px;font-weight:700;}
+.cal-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.cal-nav{display:flex;gap:4px;}
+.cal-btn{width:28px;height:28px;border-radius:7px;background:var(--glass);border:1px solid var(--border);cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;transition:all .12s;}
+.cal-btn:hover{background:var(--glass2);color:var(--text);}
+.cal-btn .material-symbols-rounded{font-size:15px;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cal-day-name{text-align:center;padding:4px 0;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.3px;}
+.cal-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:4px 0;border-radius:8px;cursor:pointer;transition:all .12s;font-size:11px;font-weight:500;color:var(--text2);}
+.cal-day:hover{background:var(--glass2);color:var(--text);}
+.cal-day.today{background:linear-gradient(135deg,rgba(167,139,250,.25),rgba(124,58,237,.15));color:var(--accent3);border:1px solid rgba(167,139,250,.3);font-weight:700;}
+.cal-day.has-rev{color:var(--green);}
+.cal-day.empty{cursor:default;}.cal-day.empty:hover{background:transparent;}
+.cal-dots{display:flex;gap:2px;margin-top:2px;justify-content:center;}
+.cal-dot{width:3px;height:3px;border-radius:99px;}
+.cal-rev{font-size:7.5px;color:var(--green);font-weight:700;margin-top:1px;}
+
+/* ─── TABLE ─── */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead th{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:0 12px 10px;text-align:left;border-bottom:1px solid var(--border);}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--glass);}
+tbody td{padding:12px;font-size:12px;color:var(--text);}
+.cell-main{display:flex;align-items:center;gap:10px;}
+.cell-name{font-weight:600;font-size:12px;}
+.cell-sub{font-size:10px;color:var(--text3);margin-top:1px;}
+.avatar{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.av0{background:linear-gradient(135deg,#7c3aed,#a78bfa);}
+.av1{background:linear-gradient(135deg,#2563eb,#60a5fa);}
+.av2{background:linear-gradient(135deg,#059669,#34d399);}
+.av3{background:linear-gradient(135deg,#db2777,#f472b6);}
+.av4{background:linear-gradient(135deg,#d97706,#fbbf24);}
+.av5{background:linear-gradient(135deg,#0891b2,#67e8f9);}
+
+/* ─── BADGE ─── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600;}
+.badge-dot{width:4px;height:4px;border-radius:99px;}
+.badge.green{background:rgba(52,211,153,.12);color:var(--green);}
+.badge.green .badge-dot{background:var(--green);}
+.badge.amber{background:rgba(251,191,36,.12);color:var(--amber);}
+.badge.amber .badge-dot{background:var(--amber);}
+.badge.red{background:rgba(248,113,113,.12);color:var(--red);}
+.badge.red .badge-dot{background:var(--red);}
+.badge.purple{background:rgba(167,139,250,.12);color:var(--accent3);}
+.badge.purple .badge-dot{background:var(--accent);}
+.badge.gray{background:rgba(255,255,255,.06);color:var(--text3);}
+.badge.gray .badge-dot{background:var(--text3);}
+
+/* ─── BUTTONS ─── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .12s;font-family:inherit;}
+.btn .material-symbols-rounded{font-size:15px;}
+.btn-primary{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.3);}
+.btn-ghost{background:var(--glass);border:1px solid var(--border);color:var(--text2);}
+.btn-ghost:hover{background:var(--glass2);color:var(--text);}
+.btn-sm{padding:5px 12px;font-size:11px;}
+.icon-btn{width:30px;height:30px;border-radius:8px;background:var(--glass);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);transition:all .12s;}
+.icon-btn:hover{background:var(--glass2);color:var(--text);}
+.icon-btn.red:hover{background:rgba(248,113,113,.1);color:var(--red);}
+.icon-btn .material-symbols-rounded{font-size:15px;}
+
+/* ─── MODAL ─── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+#modal-cita,#modal-cliente,#modal-servicio,#modal-peluquero{z-index:320;}
+.modal{background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:26px;transform:translateY(16px);transition:transform .2s;box-shadow:0 40px 80px rgba(0,0,0,.5);max-height:90vh;overflow-y:auto;}
+.modal-overlay.open .modal{transform:translateY(0);}
+.modal-sm{width:400px;}.modal-md{width:480px;}
+.modal-xl{width:min(96vw,1200px);padding:0;display:flex;flex-direction:column;max-height:90vh;}
+.modal-title{font-size:17px;font-weight:800;margin-bottom:20px;}
+
+/* ─── FORM ─── */
+.form-group{margin-bottom:13px;}
+.form-label{display:block;font-size:10px;font-weight:600;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px;}
+.form-input,.form-select{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:9px;padding:9px 12px;font-size:13px;color:var(--text);font-family:inherit;outline:none;transition:border-color .12s;-webkit-appearance:none;}
+.form-input:focus,.form-select:focus{border-color:var(--accent);}
+.form-input::placeholder{color:var(--text3);}
+.form-select option{background:var(--bg3);color:var(--text);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.price-hint{font-size:11px;color:var(--green);font-weight:600;margin-top:4px;min-height:14px;}
+.modal-actions{display:flex;gap:8px;margin-top:20px;}
+.modal-actions .btn{flex:1;justify-content:center;}
+
+/* ─── UPCOMING ─── */
+.appt-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.appt-item:last-child{border-bottom:none;}
+.appt-date-box{text-align:center;min-width:36px;}
+.appt-date-day{font-size:16px;font-weight:800;line-height:1;}
+.appt-date-month{font-size:9px;color:var(--text3);font-weight:600;text-transform:uppercase;}
+.appt-info{flex:1;}
+.appt-name{font-size:12px;font-weight:600;}
+.appt-service{font-size:10px;color:var(--text3);margin-top:1px;}
+.appt-price{font-size:11px;font-weight:700;color:var(--green);}
+
+/* ─── PELUQUERO COLOR DOT ─── */
+.pel-dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0;}
+.pel-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:99px;font-size:10px;font-weight:600;background:rgba(255,255,255,.06);}
+
+/* ═══════════ DAY VIEW ═══════════ */
+.day-modal-header{padding:20px 24px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0;}
+.day-modal-body{overflow-y:auto;overflow-x:hidden;flex:1;}
+
+/* Column grid */
+.day-grid{display:flex;height:876px;}
+.day-time-col{width:56px;flex-shrink:0;display:flex;flex-direction:column;padding-top:36px;}
+.day-time-label{height:60px;font-size:9px;color:var(--text3);font-weight:600;display:flex;align-items:flex-start;padding-right:8px;justify-content:flex-end;transform:translateY(-8px);flex-shrink:0;}
+.day-stylist-cols{flex:1;display:flex;overflow-x:auto;min-width:0;border-left:1px solid var(--border);}
+.day-stylist-col{flex:1;min-width:180px;border-right:1px solid var(--border);display:flex;flex-direction:column;}
+.day-stylist-hdr{height:36px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;font-weight:700;border-bottom:3px solid;flex-shrink:0;background:var(--bg3);position:sticky;top:0;z-index:2;}
+.day-stylist-area{position:relative;height:840px;flex-shrink:0;background:repeating-linear-gradient(to bottom,transparent,transparent 59px,var(--border) 59px,var(--border) 60px);cursor:crosshair;}
+.day-now-line{position:absolute;left:0;right:0;height:2px;background:var(--red);z-index:5;pointer-events:none;}
+.day-now-line::before{content:'';position:absolute;left:-4px;top:-4px;width:10px;height:10px;border-radius:99px;background:var(--red);}
+
+/* Events */
+.tg-event{position:absolute;left:3px;right:3px;border-radius:7px;padding:5px 8px;overflow:hidden;border-left:3px solid;transition:transform .12s,box-shadow .12s;z-index:4;cursor:pointer;}
+.tg-event:hover{transform:scaleX(1.015);box-shadow:0 4px 14px rgba(0,0,0,.3);z-index:6;}
+.tg-event-name{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tg-event-info{font-size:9px;color:var(--text2);margin-top:1px;}
+.tg-event-status{font-size:9px;font-weight:600;margin-top:3px;}
+.tg-click-hint{position:absolute;bottom:10px;width:100%;text-align:center;font-size:10px;color:var(--text3);pointer-events:none;}
+
+/* WA buttons */
+.wa-btns{display:flex;gap:4px;margin-top:5px;}
+.wa-btn{font-size:9px;padding:2px 7px;border-radius:4px;cursor:pointer;border:none;font-family:inherit;font-weight:700;}
+.wa-btn:hover{opacity:.8;}
+.wa-confirm{background:rgba(52,211,153,.2);color:var(--green);}
+.wa-cancel{background:rgba(248,113,113,.2);color:var(--red);}
+
+.day-empty-col{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text3);pointer-events:none;gap:6px;}
+.day-empty-col .material-symbols-rounded{font-size:32px;}
+
+/* ─── CLIENT AUTOCOMPLETE ─── */
+.cli-ac-wrap{position:relative;}
+.cli-ac-dropdown{
+  display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;
+  background:var(--bg3);border:1px solid var(--border2);border-radius:9px;
+  z-index:60;max-height:220px;overflow-y:auto;
+  box-shadow:0 8px 24px rgba(0,0,0,.45);
+}
+.cli-ac-item{
+  padding:9px 12px;cursor:pointer;
+  border-bottom:1px solid var(--border);transition:background .1s;
+}
+.cli-ac-item:last-child{border-bottom:none;}
+.cli-ac-item:hover{background:var(--glass2);}
+.cli-ac-name{font-size:12px;font-weight:600;}
+.cli-ac-tel{font-size:10px;color:var(--text3);margin-top:1px;}
+.empty{text-align:center;padding:40px 20px;}
+.empty .material-symbols-rounded{font-size:38px;color:var(--text3);display:block;margin-bottom:8px;}
+.empty-title{font-size:14px;font-weight:600;margin-bottom:4px;}
+.empty-sub{font-size:11px;color:var(--text3);}
+
+/* ─── TOAST ─── */
+#toast{position:fixed;bottom:20px;right:20px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:11px 16px;font-size:12px;font-weight:500;display:flex;align-items:center;gap:8px;z-index:999;transform:translateY(60px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 16px 40px rgba(0,0,0,.4);}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.success{border-color:rgba(52,211,153,.35);}
+#toast.error{border-color:rgba(248,113,113,.35);}
+.t-icon{font-size:16px;}
+#toast.success .t-icon{color:var(--green);}
+#toast.error .t-icon{color:var(--red);}
+
+/* ─── UTILS ─── */
+.flex{display:flex;}.items-center{align-items:center;}.gap-8{gap:8px;}.gap-4{gap:4px;}.ml-auto{margin-left:auto;}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1100px){
+  :root{--sw:60px;}
+  .nav-link-label,.nav-section,.nav-badge{display:none;}
+  .nav-link{justify-content:center;padding:10px;}
+  .grid-4{grid-template-columns:repeat(2,1fr);}
+  .grid-2-1{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ TITLEBAR ══ -->
+<div id="titlebar">
+  <div class="app-logo">
+    <div class="app-logo-icon"><span class="material-symbols-rounded">content_cut</span></div>
+    <div class="app-logo-name">Luxe Salon</div>
+  </div>
+  <span class="page-crumb" id="page-crumb" style="-webkit-app-region:no-drag">Inicio</span>
+  <div class="tb-drag"></div>
+  <div class="win-controls">
+    <button class="wc-btn" id="wc-min"><span class="material-symbols-rounded">remove</span></button>
+    <button class="wc-btn" id="wc-max"><span class="material-symbols-rounded">crop_square</span></button>
+    <button class="wc-btn wc-close" id="wc-close"><span class="material-symbols-rounded">close</span></button>
+  </div>
+</div>
+
+<!-- ══ LAYOUT ══ -->
+<div id="layout">
+  <aside id="sidebar">
+    <div class="nav-section">Principal</div>
+    <button class="nav-link active" data-page="dashboard">
+      <span class="material-symbols-rounded">home</span>
+      <span class="nav-link-label">Inicio</span>
+    </button>
+    <button class="nav-link" data-page="clientes">
+      <span class="material-symbols-rounded">group</span>
+      <span class="nav-link-label">Clientes</span>
+    </button>
+    <button class="nav-link" data-page="citas">
+      <span class="material-symbols-rounded">calendar_month</span>
+      <span class="nav-link-label">Citas</span>
+    </button>
+
+    <div class="nav-section">Gestión</div>
+    <button class="nav-link" data-page="peluqueros">
+      <span class="material-symbols-rounded">person_pin</span>
+      <span class="nav-link-label">Peluqueros</span>
+    </button>
+    <button class="nav-link" data-page="servicios">
+      <span class="material-symbols-rounded">content_cut</span>
+      <span class="nav-link-label">Servicios</span>
+    </button>
+    <button class="nav-link" data-page="config">
+      <span class="material-symbols-rounded">settings</span>
+      <span class="nav-link-label">Configuración</span>
+    </button>
+
+    <div class="sidebar-bottom">
+      <button class="nav-link" id="btn-wa-sidebar" style="color:var(--green)">
+        <span class="material-symbols-rounded">chat</span>
+        <span class="nav-link-label">WhatsApp</span>
+        <span class="nav-badge">ON</span>
+      </button>
+    </div>
+  </aside>
+
+  <div id="content-wrap">
+    <div id="content"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL: CLIENTE ══ -->
+<div class="modal-overlay" id="modal-cliente">
+  <div class="modal modal-sm">
+    <div class="modal-title">Nuevo Cliente</div>
+    <div class="form-group">
+      <label class="form-label">Nombre completo</label>
+      <input class="form-input" id="cli-nombre" type="text" placeholder="Ej. María García">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Teléfono</label>
+      <input class="form-input" id="cli-telefono" type="tel" placeholder="+34 600 000 000">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="btn-cancel-cliente">Cancelar</button>
+      <button class="btn btn-primary" id="btn-save-cliente"><span class="material-symbols-rounded">save</span>Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: CITA ══ -->
+<div class="modal-overlay" id="modal-cita">
+  <div class="modal modal-md">
+    <div class="modal-title" id="cita-modal-title">Nueva Cita</div>
+    <input type="hidden" id="cita-edit-id">
+    <div class="form-group">
+      <label class="form-label">Peluquero / Agenda</label>
+      <select class="form-select" id="cita-peluquero"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Cliente</label>
+      <div class="cli-ac-wrap">
+        <input class="form-input" id="cita-cliente-search" type="text"
+          placeholder="Buscar por nombre o teléfono…" autocomplete="off">
+        <input type="hidden" id="cita-cliente-id">
+        <div class="cli-ac-dropdown" id="cita-cliente-dropdown"></div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Fecha</label>
+        <input class="form-input" id="cita-fecha" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Hora</label>
+        <input class="form-input" id="cita-hora" type="time" value="10:00">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Servicio</label>
+      <select class="form-select" id="cita-servicio"></select>
+      <div class="price-hint" id="cita-price-hint"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Duración (minutos)</label>
+      <input class="form-input" id="cita-duracion" type="number" min="5" max="480" value="60">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="btn-cancel-cita">Cancelar</button>
+      <button class="btn btn-primary" id="btn-save-cita"><span class="material-symbols-rounded">event</span>Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: SERVICIO ══ -->
+<div class="modal-overlay" id="modal-servicio">
+  <div class="modal modal-sm">
+    <div class="modal-title" id="srv-modal-title">Nuevo Servicio</div>
+    <input type="hidden" id="srv-edit-id">
+    <div class="form-group">
+      <label class="form-label">Nombre</label>
+      <input class="form-input" id="srv-nombre" type="text" placeholder="Ej. Balayage">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Precio (€)</label>
+        <input class="form-input" id="srv-precio" type="number" min="0" step="0.5">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Duración (min)</label>
+        <input class="form-input" id="srv-duracion" type="number" min="5" max="480" value="60">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="btn-cancel-srv">Cancelar</button>
+      <button class="btn btn-primary" id="btn-save-srv"><span class="material-symbols-rounded">save</span>Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: PELUQUERO ══ -->
+<div class="modal-overlay" id="modal-peluquero">
+  <div class="modal modal-sm">
+    <div class="modal-title" id="pel-modal-title">Nuevo Peluquero</div>
+    <input type="hidden" id="pel-edit-id">
+    <div class="form-group">
+      <label class="form-label">Nombre</label>
+      <input class="form-input" id="pel-nombre" type="text" placeholder="Ej. Carlos López">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Color de agenda</label>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
+        <input type="color" id="pel-color" value="#7c3aed" style="width:44px;height:36px;padding:2px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;cursor:pointer;">
+        <span style="font-size:11px;color:var(--text3)">Color que identifica su agenda en el calendario</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;" id="pel-color-presets">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="btn-cancel-pel">Cancelar</button>
+      <button class="btn btn-primary" id="btn-save-pel"><span class="material-symbols-rounded">save</span>Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: DAY VIEW ══ -->
+<div class="modal-overlay" id="modal-day">
+  <div class="modal modal-xl">
+    <div class="day-modal-header">
+      <div>
+        <div style="font-size:18px;font-weight:800;" id="day-title">—</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:6px;" id="day-meta"></div>
+      </div>
+      <div class="flex gap-8 items-center">
+        <button class="btn btn-primary btn-sm" id="btn-day-new-cita" style="display:none">
+          <span class="material-symbols-rounded">add</span>Nueva Cita
+        </button>
+        <button class="icon-btn" id="btn-close-day"><span class="material-symbols-rounded">close</span></button>
+      </div>
+    </div>
+    <div class="day-modal-body">
+      <div class="day-grid" id="day-grid">
+        <div class="day-time-col" id="day-time-labels"></div>
+        <div class="day-stylist-cols" id="day-stylist-cols"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TOAST ══ -->
+<div id="toast">
+  <span class="material-symbols-rounded t-icon">check_circle</span>
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+const { ipcRenderer } = require('electron');
+const db = require('./src/database.js');
+
+// ─── Estado global ────────────────────────────────────────
+let currentPage   = 'dashboard';
+let calDate       = new Date();
+let allClientes   = [];
+let allCitas      = [];
+let allServicios  = [];
+let allPeluqueros = [];
+let currentDayStr = '';
+
+const PRESET_COLORS = ['#7c3aed','#2563eb','#059669','#db2777','#d97706','#0891b2','#dc2626','#7c3aed'];
+
+// ─── Utils ───────────────────────────────────────────────
+function eur(n){ return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(n||0); }
+function todayStr(){ const t=new Date(); return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`; }
+function avatarClass(s){ let h=0; for(const c of s) h=((h<<5)-h)+c.charCodeAt(0); return 'av'+(Math.abs(h)%6); }
+function initials(n){ return n.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
+
+function toast(msg,type='success'){
+  const el=document.getElementById('toast');
+  el.querySelector('.t-icon').textContent=type==='success'?'check_circle':'error';
+  document.getElementById('toast-msg').textContent=msg;
+  el.className=`show ${type}`;
+  setTimeout(()=>el.className='',2800);
+}
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+['modal-cliente','modal-cita','modal-servicio','modal-peluquero','modal-day'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',e=>{ if(e.target===e.currentTarget) closeModal(id); });
+});
+
+function estadoBadge(e){
+  const m={pendiente:'<span class="badge gray"><span class="badge-dot"></span>Pendiente</span>',recordatorio_enviado:'<span class="badge amber"><span class="badge-dot"></span>📱 Recordatorio</span>',confirmada:'<span class="badge green"><span class="badge-dot"></span>✅ Confirmada</span>',cancelada:'<span class="badge red"><span class="badge-dot"></span>❌ Cancelada</span>'};
+  return m[e]||m.pendiente;
+}
+function pelTag(cita){
+  if(!cita.peluquero_nombre) return '';
+  return `<span class="pel-tag"><span class="pel-dot" style="background:${cita.peluquero_color||'#7c3aed'}"></span>${cita.peluquero_nombre}</span>`;
+}
+
+// ─── Routing ─────────────────────────────────────────────
+function navigate(page){
+  currentPage=page;
+  document.querySelectorAll('.nav-link[data-page]').forEach(l=>l.classList.toggle('active',l.dataset.page===page));
+  const titles={dashboard:'Inicio',clientes:'Clientes',citas:'Citas',peluqueros:'Peluqueros',servicios:'Servicios',config:'Configuración'};
+  document.getElementById('page-crumb').textContent=titles[page]||page;
+  document.getElementById('content').innerHTML='';
+  if(page==='dashboard')  renderDashboard();
+  else if(page==='clientes')   renderClientes();
+  else if(page==='citas')      renderCitas();
+  else if(page==='peluqueros') renderPeluqueros();
+  else if(page==='servicios')  renderServicios();
+  else if(page==='config')     renderConfig();
+}
+
+// ════════════════════════════════════════════════════════
+//  DASHBOARD
+// ════════════════════════════════════════════════════════
+async function renderDashboard(){
+  try{ [allClientes,allCitas,allPeluqueros]=await Promise.all([db.getClientes(),db.getCitas(),db.getPeluqueros()]); }catch(e){}
+  const now=new Date(); const cy=now.getFullYear(),cm=now.getMonth()+1;
+  let ingresoMes=0,ingresoDia=0,estimadoMes=0;
+  try{
+    ingresoMes=await db.getIngresosMes(cy,cm);
+    ingresoDia=await db.getIngresosDelDia(todayStr());
+    const diaActual=now.getDate();
+    const diasMes=new Date(cy,cm,0).getDate();
+    estimadoMes=diaActual>0?(ingresoMes/diaActual)*diasMes:0;
+  }catch(e){}
+  const citasMes=allCitas.filter(c=>{ const d=new Date(c.fecha+'T12:00:00'); return d.getMonth()===now.getMonth()&&d.getFullYear()===cy; });
+  const startOfToday=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const upcoming=allCitas.filter(c=>new Date(c.fecha+'T12:00:00')>=startOfToday)
+    .sort((a,b)=>new Date(a.fecha+' '+a.hora)-new Date(b.fecha+' '+b.hora)).slice(0,8);
+
+  document.getElementById('content').innerHTML=`
+    <div class="grid-4 mb-20">
+      <div class="stat-card" style="--glow:rgba(167,139,250,.06)">
+        <div class="stat-icon" style="background:rgba(167,139,250,.15);color:var(--accent3)"><span class="material-symbols-rounded">group</span></div>
+        <div class="stat-value">${allClientes.length}</div><div class="stat-label">Clientes</div>
+        <div class="stat-change up"><span class="material-symbols-rounded">people</span>Registrados</div>
+      </div>
+      <div class="stat-card" style="--glow:rgba(52,211,153,.06)">
+        <div class="stat-icon" style="background:rgba(52,211,153,.15);color:var(--green)"><span class="material-symbols-rounded">calendar_month</span></div>
+        <div class="stat-value">${citasMes.length}</div><div class="stat-label">Citas este mes</div>
+        <div class="stat-change up"><span class="material-symbols-rounded">trending_up</span>${now.toLocaleString('es',{month:'long'})}</div>
+      </div>
+      <div class="stat-card" style="--glow:rgba(251,191,36,.06)">
+        <div class="stat-icon" style="background:rgba(251,191,36,.15);color:var(--amber)"><span class="material-symbols-rounded">today</span></div>
+        <div class="stat-value">${eur(ingresoDia)}</div><div class="stat-label">Ingresos hoy</div>
+        <div class="stat-change up"><span class="material-symbols-rounded">payments</span>Día actual</div>
+      </div>
+      <div class="stat-card" style="--glow:rgba(52,211,153,.06)">
+        <div class="stat-icon" style="background:rgba(52,211,153,.15);color:var(--green)"><span class="material-symbols-rounded">account_balance_wallet</span></div>
+        <div class="stat-value">${eur(ingresoMes)}</div><div class="stat-label">Ingresos del mes</div>
+        <div class="stat-change up" style="flex-direction:column;align-items:flex-start;gap:2px">
+          <span style="display:flex;align-items:center;gap:3px"><span class="material-symbols-rounded">today</span>Actuales: ${eur(ingresoMes)}</span>
+          <span style="display:flex;align-items:center;gap:3px;color:var(--accent3)"><span class="material-symbols-rounded">auto_graph</span>Estimado: ${eur(estimadoMes)}</span>
+        </div>
+      </div>
+    </div>
+    <div class="grid-2-1">
+      <div class="card">
+        <div class="cal-header">
+          <div><div class="cal-month" id="cal-month">—</div><div class="cal-sub" id="cal-sub"></div></div>
+          <div class="cal-nav">
+            <button class="cal-btn" id="cal-prev"><span class="material-symbols-rounded">chevron_left</span></button>
+            <button class="cal-btn" id="cal-next"><span class="material-symbols-rounded">chevron_right</span></button>
+          </div>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px" id="btn-dash-new-cita">
+          <span class="material-symbols-rounded">add</span>Nueva Cita
+        </button>
+        <button class="btn btn-ghost" style="width:100%;justify-content:center;" id="btn-dash-new-cli">
+          <span class="material-symbols-rounded">person_add</span>Nuevo Cliente
+        </button>
+        <div class="card" style="flex:1;overflow-y:auto;padding:16px;">
+          <div class="section-title">Próximas citas</div>
+          <div id="upcoming-list"></div>
+        </div>
+      </div>
+    </div>`;
+
+  renderCalendar();
+  document.getElementById('cal-prev').onclick=()=>{ calDate.setMonth(calDate.getMonth()-1); renderCalendar(); };
+  document.getElementById('cal-next').onclick=()=>{ calDate.setMonth(calDate.getMonth()+1); renderCalendar(); };
+  document.getElementById('btn-dash-new-cita').onclick=()=>openCitaModal();
+  document.getElementById('btn-dash-new-cli').onclick=()=>openClienteModal();
+
+  const ul=document.getElementById('upcoming-list');
+  if(upcoming.length===0){
+    ul.innerHTML=`<div class="empty"><span class="material-symbols-rounded">event_busy</span><div class="empty-title">Sin citas próximas</div></div>`;
+  } else {
+    upcoming.forEach(c=>{
+      const d=new Date(c.fecha+'T12:00:00');
+      const isToday=c.fecha===todayStr();
+      ul.innerHTML+=`<div class="appt-item">
+        <div class="appt-date-box">
+          <div class="appt-date-day">${d.getDate()}</div>
+          <div class="appt-date-month">${isToday?'HOY':d.toLocaleString('es',{month:'short'})}</div>
+        </div>
+        <div class="avatar ${avatarClass(c.nombre)}" style="width:28px;height:28px;font-size:10px">${initials(c.nombre)}</div>
+        <div class="appt-info">
+          <div class="appt-name">${c.nombre}</div>
+          <div class="appt-service">${c.hora} · ${c.servicio} ${pelTag(c)}</div>
+        </div>
+        <div class="appt-price">${eur(c.precio)}</div>
+      </div>`;
+    });
+  }
+}
+
+async function renderCalendar(){
+  const months=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const y=calDate.getFullYear(),m=calDate.getMonth();
+  const today=new Date();
+  document.getElementById('cal-month').textContent=`${months[m]} ${y}`;
+  let citasPorDia=[];
+  try{ citasPorDia=await db.getCitasPorDia(y,m+1); }catch(e){}
+  const revMap={};
+  citasPorDia.forEach(r=>{ revMap[r.fecha]={total:r.total,num:r.num}; });
+  const totalMes=citasPorDia.reduce((s,r)=>s+r.total,0);
+  document.getElementById('cal-sub').textContent=`${eur(totalMes)} este mes`;
+  const grid=document.getElementById('cal-grid');
+  grid.innerHTML='';
+  ['L','M','X','J','V','S','D'].forEach(d=>{ const el=document.createElement('div'); el.className='cal-day-name'; el.textContent=d; grid.appendChild(el); });
+  const first=(new Date(y,m,1).getDay()+6)%7;
+  for(let i=0;i<first;i++){ const el=document.createElement('div'); el.className='cal-day empty'; grid.appendChild(el); }
+  const days=new Date(y,m+1,0).getDate();
+  for(let d=1;d<=days;d++){
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=(d===today.getDate()&&m===today.getMonth()&&y===today.getFullYear());
+    const rev=revMap[ds];
+    const el=document.createElement('div');
+    el.className='cal-day'+(isToday?' today':'')+(rev?' has-rev':'');
+    el.innerHTML=`<span>${d}</span>`;
+    if(rev){
+      const dotsDiv=document.createElement('div'); dotsDiv.className='cal-dots';
+      for(let i=0;i<Math.min(rev.num,3);i++){ const dot=document.createElement('div'); dot.className='cal-dot'; dotsDiv.appendChild(dot); }
+      el.appendChild(dotsDiv);
+      if(rev.total>0){ const rv=document.createElement('div'); rv.className='cal-rev'; rv.textContent=eur(rev.total); el.appendChild(rv); }
+    }
+    el.onclick=()=>openDayModal(ds);
+    grid.appendChild(el);
+  }
+}
+
+// ════════════════════════════════════════════════════════
+//  DAY VIEW — columnas por peluquero
+// ════════════════════════════════════════════════════════
+async function openDayModal(dateStr){
+  currentDayStr=dateStr;
+  const today=todayStr();
+  const isPast=dateStr<today;
+  const isTodayD=dateStr===today;
+  const d=new Date(dateStr+'T12:00:00');
+  document.getElementById('day-title').textContent=d.toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  let citas=[],peluqueros=[];
+  try{
+    [citas,peluqueros]=await Promise.all([db.getCitasByFecha(dateStr),db.getPeluqueros()]);
+    allPeluqueros=peluqueros;
+  }catch(e){ console.error(e); }
+
+  const totalRev=citas.reduce((s,c)=>s+(c.precio||0),0);
+  document.getElementById('day-meta').innerHTML=`
+    <span class="badge ${isPast?'purple':isTodayD?'amber':'green'}"><span class="badge-dot"></span>${isPast?'Finalizado':isTodayD?'Hoy':'Próximo'}</span>
+    <span style="font-size:12px;color:var(--green);font-weight:700">${eur(totalRev)} · ${citas.length} cita${citas.length!==1?'s':''}</span>
+    <span style="font-size:11px;color:var(--text3)">${peluqueros.length} peluquero${peluqueros.length!==1?'s':''}</span>`;
+
+  const btnNew=document.getElementById('btn-day-new-cita');
+  btnNew.style.display=isPast?'none':'';
+  btnNew.onclick=()=>openCitaModal(dateStr);
+
+  // Construir labels
+  const labelsEl=document.getElementById('day-time-labels');
+  labelsEl.innerHTML='';
+  for(let h=8;h<=22;h++){
+    const lbl=document.createElement('div');
+    lbl.className='day-time-label';
+    lbl.textContent=`${String(h).padStart(2,'0')}:00`;
+    labelsEl.appendChild(lbl);
+  }
+
+  // Construir columnas
+  const colsEl=document.getElementById('day-stylist-cols');
+  colsEl.innerHTML='';
+
+  if(peluqueros.length===0){
+    colsEl.innerHTML=`<div style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:var(--text3)">
+      <span class="material-symbols-rounded" style="font-size:40px">person_off</span>
+      <div>Sin peluqueros configurados. <button class="btn btn-primary btn-sm" onclick="closeModal('modal-day');navigate('peluqueros')"><span class="material-symbols-rounded">add</span>Añadir peluquero</button></div>
+    </div>`;
+    openModal('modal-day'); return;
+  }
+
+  peluqueros.forEach(pel=>{
+    const citasPel=citas.filter(c=>c.peluquero_id===pel.id);
+    const col=document.createElement('div');
+    col.className='day-stylist-col';
+
+    // Header
+    const hdr=document.createElement('div');
+    hdr.className='day-stylist-hdr';
+    hdr.style.borderBottomColor=pel.color;
+    hdr.style.color=pel.color;
+    hdr.innerHTML=`<span class="pel-dot" style="background:${pel.color}"></span>${pel.nombre}
+      <span style="font-size:9px;color:var(--text3);font-weight:400;margin-left:2px">(${citasPel.length})</span>`;
+    col.appendChild(hdr);
+
+    // Area de eventos
+    const area=document.createElement('div');
+    area.className='day-stylist-area';
+
+    // Now-line
+    if(isTodayD){
+      const now=new Date();
+      const mfs=(now.getHours()-8)*60+now.getMinutes();
+      if(mfs>=0&&mfs<=840){
+        const line=document.createElement('div');
+        line.className='day-now-line';
+        line.style.top=mfs+'px';
+        area.appendChild(line);
+      }
+    }
+
+    // Click para nueva cita (zona vacía)
+    if(!isPast){
+      area.addEventListener('click',e=>{
+        if(e.target.closest('.tg-event')) return;
+        const rect=area.getBoundingClientRect();
+        const y=e.clientY-rect.top;
+        const mins=Math.floor(y);
+        const clickH=Math.floor(mins/60)+8;
+        const clickM=Math.round((mins%60)/15)*15;
+        if(clickH<8||clickH>21) return;
+        const hora=`${String(clickH).padStart(2,'0')}:${String(clickM%60).padStart(2,'0')}`;
+        closeModal('modal-day');
+        openCitaModal(dateStr,null,hora,null,pel.id);
+      });
+      const hint=document.createElement('div');
+      hint.className='tg-click-hint';
+      hint.textContent='Clic para añadir cita';
+      area.appendChild(hint);
+    }
+
+    // Sin citas en esta columna
+    if(citasPel.length===0){
+      const empty=document.createElement('div');
+      empty.className='day-empty-col';
+      empty.innerHTML=`<span class="material-symbols-rounded">event_available</span><div style="font-size:10px">${isPast?'Sin citas':'Libre'}</div>`;
+      area.appendChild(empty);
+    }
+
+    // Bloques de citas
+    const bgByEstado={
+      pendiente:`rgba(167,139,250,.14)`,
+      recordatorio_enviado:`rgba(251,191,36,.13)`,
+      confirmada:`rgba(52,211,153,.13)`,
+      cancelada:`rgba(248,113,113,.10)`,
+    };
+    citasPel.forEach(c=>{
+      const [hh,mm]=(c.hora||'10:00').split(':').map(Number);
+      const mfs=(hh-8)*60+mm;
+      if(mfs<0||mfs>840) return;
+      const durPx=Math.max(c.duracion||30,20);
+
+      const block=document.createElement('div');
+      block.className='tg-event';
+      block.style.top=mfs+'px';
+      block.style.height=Math.min(durPx,840-mfs)+'px';
+      block.style.borderColor=pel.color;
+      block.style.background=bgByEstado[c.estado]||bgByEstado.pendiente;
+
+      const estadoText={pendiente:'Pendiente',recordatorio_enviado:'📱 Recordatorio enviado',confirmada:'✅ Confirmada',cancelada:'❌ Cancelada'}[c.estado||'pendiente'];
+
+      block.innerHTML=`
+        <div class="tg-event-name">${c.nombre}</div>
+        <div class="tg-event-info">${c.hora} · ${c.servicio} · ${durPx}min · ${eur(c.precio)}</div>
+        <div class="tg-event-status">${estadoText}</div>`;
+
+      if(c.estado==='recordatorio_enviado'){
+        const waDiv=document.createElement('div');
+        waDiv.className='wa-btns';
+        waDiv.innerHTML=`<button class="wa-btn wa-confirm" data-id="${c.id}">✓ Confirmar</button><button class="wa-btn wa-cancel" data-id="${c.id}">✗ Cancelar</button>`;
+        block.appendChild(waDiv);
+        waDiv.querySelector('.wa-confirm').onclick=async(e)=>{ e.stopPropagation(); await db.updateCitaEstado(c.id,'confirmada'); toast(`${c.nombre} confirmó ✅`); openDayModal(dateStr); };
+        waDiv.querySelector('.wa-cancel').onclick=async(e)=>{ e.stopPropagation(); await db.updateCitaEstado(c.id,'cancelada'); toast(`${c.nombre} canceló ❌`,'error'); openDayModal(dateStr); };
+      }
+
+      if(!isPast&&c.estado!=='cancelada'){
+        block.addEventListener('click',e=>{ if(e.target.closest('.wa-btns')) return; closeModal('modal-day'); openCitaModal(c.fecha,null,c.hora,c,c.peluquero_id); });
+      }
+      area.appendChild(block);
+    });
+
+    col.appendChild(area);
+    colsEl.appendChild(col);
+  });
+
+  openModal('modal-day');
+  setTimeout(()=>{
+    const body=document.querySelector('.day-modal-body');
+    if(!body) return;
+    const scrollTo=citas.length>0?Math.max(0,(parseInt((citas[0].hora||'10:00').split(':')[0])-8)*60-30):120;
+    body.scrollTop=scrollTo;
+  },60);
+}
+
+document.getElementById('btn-close-day').onclick=()=>closeModal('modal-day');
+
+// ════════════════════════════════════════════════════════
+//  CLIENTES
+// ════════════════════════════════════════════════════════
+async function renderClientes(){
+  try{ allClientes=await db.getClientes(); }catch(e){}
+  document.getElementById('content').innerHTML=`
+    <div class="page-header">
+      <div><div class="page-title">Clientes</div><div class="page-sub">${allClientes.length} cliente${allClientes.length!==1?'s':''}</div></div>
+      <div class="flex gap-8 items-center">
+        <div style="background:var(--glass);border:1px solid var(--border);border-radius:9px;display:flex;align-items:center;gap:7px;padding:0 11px;height:34px;">
+          <span class="material-symbols-rounded" style="font-size:16px;color:var(--text3)">search</span>
+          <input type="text" id="cli-search" placeholder="Buscar por nombre o teléfono…" style="background:transparent;border:none;outline:none;color:var(--text);font-size:12px;width:220px;font-family:inherit;">
+        </div>
+        <button class="btn btn-primary" id="btn-nuevo-cli"><span class="material-symbols-rounded">person_add</span>Nuevo Cliente</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table><thead><tr><th>Cliente</th><th>Teléfono</th><th>Estado</th><th>Acciones</th></tr></thead>
+        <tbody id="cli-tbody"></tbody></table>
+      </div>
+    </div>`;
+  document.getElementById('btn-nuevo-cli').onclick=()=>openClienteModal();
+  document.getElementById('cli-search').addEventListener('input',e=>{
+    const q=e.target.value.trim().toLowerCase();
+    refreshClientesTable(q?allClientes.filter(c=>c.nombre.toLowerCase().includes(q)||(c.telefono||'').includes(q)):allClientes);
+  });
+  refreshClientesTable();
+}
+function refreshClientesTable(lista=allClientes){
+  const tb=document.getElementById('cli-tbody'); if(!tb) return;
+  tb.innerHTML='';
+  if(lista.length===0){ tb.innerHTML=`<tr><td colspan="4"><div class="empty"><span class="material-symbols-rounded">person_off</span><div class="empty-title">Sin resultados</div></div></td></tr>`; return; }
+  lista.forEach(c=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><div class="cell-main"><div class="avatar ${avatarClass(c.nombre)}">${initials(c.nombre)}</div><div class="cell-name">${c.nombre}</div></div></td>
+      <td style="color:var(--text2)">${c.telefono||'—'}</td>
+      <td><span class="badge green"><span class="badge-dot"></span>Activo</span></td>
+      <td><button class="icon-btn btn-cli-cita" data-id="${c.id}" title="Nueva cita"><span class="material-symbols-rounded">event</span></button></td>`;
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll('.btn-cli-cita').forEach(btn=>{ btn.onclick=()=>openCitaModal(null,btn.dataset.id); });
+}
+
+// ════════════════════════════════════════════════════════
+//  CITAS
+// ════════════════════════════════════════════════════════
+async function renderCitas(){
+  try{ [allCitas,allClientes]=await Promise.all([db.getCitas(),db.getClientes()]); }catch(e){}
+  document.getElementById('content').innerHTML=`
+    <div class="page-header">
+      <div><div class="page-title">Citas</div><div class="page-sub">${allCitas.length} registrada${allCitas.length!==1?'s':''}</div></div>
+      <button class="btn btn-primary" id="btn-nueva-cita-p"><span class="material-symbols-rounded">add</span>Nueva Cita</button>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table><thead><tr><th>Cliente</th><th>Peluquero</th><th>Fecha · Hora</th><th>Servicio</th><th>Precio</th><th>Estado</th><th></th></tr></thead>
+        <tbody id="citas-tbody"></tbody></table>
+      </div>
+    </div>`;
+  document.getElementById('btn-nueva-cita-p').onclick=()=>openCitaModal();
+  refreshCitasTable();
+}
+function refreshCitasTable(){
+  const tb=document.getElementById('citas-tbody'); if(!tb) return;
+  tb.innerHTML='';
+  const sorted=[...allCitas].sort((a,b)=>new Date(b.fecha+' '+b.hora)-new Date(a.fecha+' '+a.hora));
+  if(sorted.length===0){ tb.innerHTML=`<tr><td colspan="7"><div class="empty"><span class="material-symbols-rounded">event_busy</span><div class="empty-title">Sin citas</div></div></td></tr>`; return; }
+  const now=new Date();
+  sorted.forEach(c=>{
+    const d=new Date(c.fecha+'T'+c.hora+':00');
+    const isPast=d<now; const isToday=c.fecha===todayStr();
+    const timeBadge=isPast?'<span class="badge purple"><span class="badge-dot"></span>Pasada</span>':isToday?'<span class="badge amber"><span class="badge-dot"></span>Hoy</span>':'<span class="badge green"><span class="badge-dot"></span>Próxima</span>';
+    tb.innerHTML+=`<tr>
+      <td><div class="cell-main"><div class="avatar ${avatarClass(c.nombre)}" style="width:28px;height:28px;font-size:10px">${initials(c.nombre)}</div>
+        <div><div class="cell-name">${c.nombre}</div><div class="cell-sub">${c.telefono||''}</div></div></div></td>
+      <td>${c.peluquero_nombre?`<span class="pel-tag"><span class="pel-dot" style="background:${c.peluquero_color||'#7c3aed'}"></span>${c.peluquero_nombre}</span>`:'—'}</td>
+      <td style="color:var(--text2)">${new Date(c.fecha+'T12:00:00').toLocaleDateString('es',{day:'numeric',month:'short'})} · ${c.hora||''}</td>
+      <td style="color:var(--text2)">${c.servicio}<span style="color:var(--text3);font-size:10px;margin-left:4px">${c.duracion}min</span></td>
+      <td style="font-weight:700;color:var(--green)">${eur(c.precio)}</td>
+      <td>${estadoBadge(c.estado)} ${timeBadge}</td>
+      <td><div class="flex gap-4">
+        <button class="icon-btn btn-view-day" data-fecha="${c.fecha}" title="Ver día"><span class="material-symbols-rounded">today</span></button>
+        ${!isPast&&c.estado!=='cancelada'?`<button class="icon-btn btn-edit-cita" data-id="${c.id}" title="Editar"><span class="material-symbols-rounded">edit</span></button>`:''}
+      </div></td>
+    </tr>`;
+  });
+  tb.querySelectorAll('.btn-view-day').forEach(btn=>{ btn.onclick=()=>openDayModal(btn.dataset.fecha); });
+  tb.querySelectorAll('.btn-edit-cita').forEach(btn=>{
+    btn.onclick=async()=>{ const cita=allCitas.find(x=>x.id==btn.dataset.id); if(cita) openCitaModal(cita.fecha,null,cita.hora,cita,cita.peluquero_id); };
+  });
+}
+
+// ════════════════════════════════════════════════════════
+//  PELUQUEROS
+// ════════════════════════════════════════════════════════
+async function renderPeluqueros(){
+  try{ allPeluqueros=await db.getPeluqueros(); }catch(e){}
+  document.getElementById('content').innerHTML=`
+    <div class="page-header">
+      <div><div class="page-title">Peluqueros y Agendas</div><div class="page-sub">${allPeluqueros.length} peluquero${allPeluqueros.length!==1?'s':', cada uno con su agenda independiente'}</div></div>
+      <button class="btn btn-primary" id="btn-nuevo-pel"><span class="material-symbols-rounded">person_add</span>Añadir Peluquero</button>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table><thead><tr><th>Nombre</th><th>Color de Agenda</th><th>Citas</th><th>Acciones</th></tr></thead>
+        <tbody id="pel-tbody"></tbody></table>
+      </div>
+    </div>`;
+  document.getElementById('btn-nuevo-pel').onclick=()=>openPeluqueroModal();
+  refreshPeluquerosTable();
+}
+async function refreshPeluquerosTable(){
+  const tb=document.getElementById('pel-tbody'); if(!tb) return;
+  tb.innerHTML='';
+  // Contar citas por peluquero
+  let citasAll=[];
+  try{ citasAll=await db.getCitas(); }catch(e){}
+  const citaCount={};
+  citasAll.forEach(c=>{ citaCount[c.peluquero_id]=(citaCount[c.peluquero_id]||0)+1; });
+  if(allPeluqueros.length===0){
+    tb.innerHTML=`<tr><td colspan="4"><div class="empty"><span class="material-symbols-rounded">person_off</span><div class="empty-title">Sin peluqueros</div><div class="empty-sub">Añade el primer peluquero para gestionar su agenda</div></div></td></tr>`;
+    return;
+  }
+  allPeluqueros.forEach(p=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><div class="cell-main"><span class="pel-dot" style="background:${p.color};width:14px;height:14px;border-radius:50%;flex-shrink:0"></span><div class="cell-name">${p.nombre}</div></div></td>
+      <td><div style="display:flex;align-items:center;gap:8px">
+        <span style="display:inline-block;width:28px;height:18px;border-radius:4px;background:${p.color}"></span>
+        <span style="font-size:11px;color:var(--text3);font-family:monospace">${p.color}</span>
+      </div></td>
+      <td><span class="badge ${(citaCount[p.id]||0)>0?'green':'gray'}"><span class="badge-dot"></span>${citaCount[p.id]||0} cita${(citaCount[p.id]||0)!==1?'s':''}</span></td>
+      <td><div class="flex gap-4">
+        <button class="icon-btn btn-edit-pel" data-id="${p.id}" title="Editar"><span class="material-symbols-rounded">edit</span></button>
+        <button class="icon-btn red btn-del-pel" data-id="${p.id}" title="Eliminar"><span class="material-symbols-rounded">delete</span></button>
+      </div></td>`;
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll('.btn-edit-pel').forEach(btn=>{ btn.onclick=()=>{ const p=allPeluqueros.find(x=>x.id==btn.dataset.id); if(p) openPeluqueroModal(p); }; });
+  tb.querySelectorAll('.btn-del-pel').forEach(btn=>{
+    btn.onclick=async()=>{
+      if(!confirm('¿Eliminar este peluquero? Solo es posible si no tiene citas asignadas.')) return;
+      try{ await db.deletePeluquero(btn.dataset.id); toast('Peluquero eliminado'); allPeluqueros=await db.getPeluqueros(); refreshPeluquerosTable(); }
+      catch(e){ toast(e.message,'error'); }
+    };
+  });
+}
+
+function openPeluqueroModal(p=null){
+  document.getElementById('pel-edit-id').value=p?p.id:'';
+  document.getElementById('pel-modal-title').textContent=p?'Editar Peluquero':'Nuevo Peluquero';
+  document.getElementById('pel-nombre').value=p?p.nombre:'';
+  document.getElementById('pel-color').value=p?p.color:'#7c3aed';
+  // Render color presets
+  const presetsEl=document.getElementById('pel-color-presets');
+  presetsEl.innerHTML='';
+  const palette=['#7c3aed','#2563eb','#059669','#db2777','#d97706','#0891b2','#dc2626','#0f766e'];
+  palette.forEach(clr=>{
+    const btn=document.createElement('button');
+    btn.style.cssText=`width:24px;height:24px;border-radius:50%;background:${clr};border:2px solid transparent;cursor:pointer;transition:transform .1s;`;
+    if(p&&p.color===clr) btn.style.borderColor='#fff';
+    btn.onclick=()=>{ document.getElementById('pel-color').value=clr; presetsEl.querySelectorAll('button').forEach(b=>b.style.borderColor='transparent'); btn.style.borderColor='#fff'; };
+    presetsEl.appendChild(btn);
+  });
+  openModal('modal-peluquero');
+  setTimeout(()=>document.getElementById('pel-nombre').focus(),60);
+}
+
+document.getElementById('btn-cancel-pel').onclick=()=>closeModal('modal-peluquero');
+document.getElementById('btn-save-pel').onclick=async()=>{
+  const editId=document.getElementById('pel-edit-id').value;
+  const nombre=document.getElementById('pel-nombre').value.trim();
+  const color=document.getElementById('pel-color').value;
+  if(!nombre){ toast('Introduce un nombre','error'); return; }
+  try{
+    if(editId){ await db.updatePeluquero(editId,nombre,color); toast('Peluquero actualizado'); }
+    else{ await db.addPeluquero(nombre,color); toast(`Peluquero "${nombre}" añadido`); }
+    closeModal('modal-peluquero');
+    allPeluqueros=await db.getPeluqueros();
+    if(currentPage==='peluqueros') refreshPeluquerosTable();
+  }catch(e){ toast('Error: '+e.message,'error'); }
+};
+
+// ════════════════════════════════════════════════════════
+//  SERVICIOS
+// ════════════════════════════════════════════════════════
+async function renderServicios(){
+  try{ allServicios=await db.getServicios(); }catch(e){}
+  document.getElementById('content').innerHTML=`
+    <div class="page-header">
+      <div><div class="page-title">Catálogo de Servicios</div><div class="page-sub">${allServicios.length} servicios configurados</div></div>
+      <button class="btn btn-primary" id="btn-nuevo-srv"><span class="material-symbols-rounded">add</span>Nuevo Servicio</button>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table><thead><tr><th>Servicio</th><th>Precio</th><th>Duración</th><th>Acciones</th></tr></thead>
+        <tbody id="srv-tbody"></tbody></table>
+      </div>
+    </div>`;
+  document.getElementById('btn-nuevo-srv').onclick=()=>openServicioModal();
+  refreshServiciosTable();
+}
+function refreshServiciosTable(){
+  const tb=document.getElementById('srv-tbody'); if(!tb) return;
+  tb.innerHTML='';
+  if(allServicios.length===0){ tb.innerHTML=`<tr><td colspan="4"><div class="empty"><span class="material-symbols-rounded">content_cut</span><div class="empty-title">Sin servicios</div></div></td></tr>`; return; }
+  allServicios.forEach(s=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><span style="font-weight:600">${s.nombre}</span></td>
+      <td><span style="color:var(--green);font-weight:700">${eur(s.precio)}</span></td>
+      <td style="color:var(--text2)">${s.duracion} min</td>
+      <td><div class="flex gap-4">
+        <button class="icon-btn btn-edit-srv" data-id="${s.id}" title="Editar"><span class="material-symbols-rounded">edit</span></button>
+        <button class="icon-btn red btn-del-srv" data-id="${s.id}" title="Eliminar"><span class="material-symbols-rounded">delete</span></button>
+      </div></td>`;
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll('.btn-edit-srv').forEach(btn=>{ btn.onclick=()=>{ const s=allServicios.find(x=>x.id==btn.dataset.id); if(s) openServicioModal(s); }; });
+  tb.querySelectorAll('.btn-del-srv').forEach(btn=>{
+    btn.onclick=async()=>{ if(!confirm('¿Eliminar este servicio?')) return; await db.deleteServicio(btn.dataset.id); toast('Servicio eliminado'); allServicios=await db.getServicios(); refreshServiciosTable(); };
+  });
+}
+
+// ════════════════════════════════════════════════════════
+//  CONFIG
+// ════════════════════════════════════════════════════════
+function renderConfig(){
+  document.getElementById('content').innerHTML=`
+    <div class="page-header">
+      <div><div class="page-title">Configuración</div><div class="page-sub">Estado del sistema</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">Sistema</div>
+        ${[['Versión','<span class="badge purple">1.0.0</span>'],['Base de datos','<span class="badge green"><span class="badge-dot"></span>SQLite activa</span>'],['WhatsApp bot','<span class="badge green"><span class="badge-dot"></span>Mock activo</span>'],['Reportes','Automático — fin de mes']].map(([k,v])=>`
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+            <span style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.4px">${k}</span><span>${v}</span>
+          </div>`).join('')}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="card">
+          <div class="section-title">WhatsApp Reminders</div>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.6">El bot envía recordatorios automáticos 24h antes de cada cita.<br>El cliente puede confirmar o cancelar desde el mensaje.</p>
+          <button class="btn btn-ghost" style="width:100%;justify-content:center;" id="btn-trigger-reminders">
+            <span class="material-symbols-rounded">send</span>Simular envío de recordatorios
+          </button>
+          <p style="font-size:10px;color:var(--text3);margin-top:8px;text-align:center">Busca citas mañana con estado "pendiente"</p>
+        </div>
+        <div class="card">
+          <div class="section-title">Exportar Datos</div>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.6">Genera un Excel con todas las citas, clientes, peluqueros y resumen mensual.</p>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;" id="btn-gen-excel">
+            <span class="material-symbols-rounded">table_view</span>Generar Reporte Excel
+          </button>
+          <div id="excel-status" style="font-size:10px;color:var(--text3);margin-top:8px;text-align:center"></div>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('btn-trigger-reminders').onclick=()=>{ ipcRenderer.send('trigger-whatsapp-reminders'); toast('Buscando citas para mañana...'); };
+  document.getElementById('btn-gen-excel').onclick=async()=>{
+    const btn=document.getElementById('btn-gen-excel');
+    btn.disabled=true; btn.textContent='Generando...';
+    try{
+      const result=await ipcRenderer.invoke('generate-excel-report');
+      if(result.success){ toast('✅ Excel guardado correctamente'); document.getElementById('excel-status').textContent=`Guardado en: ${result.filePath}`; }
+      else toast('Generación cancelada','error');
+    }catch(e){ toast('Error: '+e.message,'error'); }
+    btn.disabled=false; btn.innerHTML='<span class="material-symbols-rounded">table_view</span>Generar Reporte Excel';
+  };
+}
+
+// ════════════════════════════════════════════════════════
+//  AUTOCOMPLETE DE CLIENTE (modal-cita)
+// ════════════════════════════════════════════════════════
+function initClienteSearch(){
+  const input    = document.getElementById('cita-cliente-search');
+  const idInput  = document.getElementById('cita-cliente-id');
+  const dropdown = document.getElementById('cita-cliente-dropdown');
+
+  function showDropdown(q){
+    const matches = allClientes
+      .filter(c => c.nombre.toLowerCase().includes(q) || (c.telefono||'').includes(q))
+      .slice(0, 10);
+    dropdown.innerHTML = '';
+    if(matches.length === 0){
+      dropdown.innerHTML = `<div class="cli-ac-item" style="color:var(--text3)">Sin resultados para "${q}"</div>`;
+    } else {
+      matches.forEach(c=>{
+        const item = document.createElement('div');
+        item.className = 'cli-ac-item';
+        item.innerHTML = `<div class="cli-ac-name">${c.nombre}</div><div class="cli-ac-tel">${c.telefono||'Sin teléfono'}</div>`;
+        item.addEventListener('mousedown', e=>{
+          e.preventDefault();
+          input.value  = c.nombre;
+          idInput.value = c.id;
+          dropdown.style.display = 'none';
+        });
+        dropdown.appendChild(item);
+      });
+    }
+    dropdown.style.display = 'block';  // ← era '' lo que activaba display:none del CSS
+  }
+
+  input.addEventListener('input', ()=>{
+    const q = input.value.trim().toLowerCase();
+    idInput.value = ''; // borrar seleccion previa al teclear
+    if(!q){ dropdown.style.display = 'none'; return; }
+    showDropdown(q);
+  });
+  input.addEventListener('focus', ()=>{
+    const q = input.value.trim().toLowerCase();
+    if(q && !idInput.value) showDropdown(q);
+  });
+  input.addEventListener('blur', ()=>{
+    setTimeout(()=>{ dropdown.style.display = 'none'; }, 200);
+  });
+  // Navegar con teclado (arriba/abajo/enter)
+  input.addEventListener('keydown', e=>{
+    const items = dropdown.querySelectorAll('.cli-ac-item');
+    const active = dropdown.querySelector('.cli-ac-item.focused');
+    if(e.key === 'ArrowDown'){
+      e.preventDefault();
+      const next = active ? active.nextElementSibling : items[0];
+      if(active) active.classList.remove('focused');
+      if(next){ next.classList.add('focused'); next.style.background='var(--glass2)'; }
+    } else if(e.key === 'ArrowUp'){
+      e.preventDefault();
+      const prev = active ? active.previousElementSibling : null;
+      if(active){ active.classList.remove('focused'); active.style.background=''; }
+      if(prev){ prev.classList.add('focused'); prev.style.background='var(--glass2)'; }
+    } else if(e.key === 'Enter' && active){
+      e.preventDefault();
+      active.dispatchEvent(new MouseEvent('mousedown'));
+    } else if(e.key === 'Escape'){
+      dropdown.style.display = 'none';
+    }
+  });
+}
+function openClienteModal(){
+  document.getElementById('cli-nombre').value='';
+  document.getElementById('cli-telefono').value='';
+  openModal('modal-cliente');
+  setTimeout(()=>document.getElementById('cli-nombre').focus(),60);
+}
+document.getElementById('btn-cancel-cliente').onclick=()=>closeModal('modal-cliente');
+document.getElementById('btn-save-cliente').onclick=async()=>{
+  const nombre=document.getElementById('cli-nombre').value.trim();
+  const telefono=document.getElementById('cli-telefono').value.trim();
+  if(!nombre){ toast('Introduce un nombre','error'); return; }
+  try{
+    await db.addCliente(nombre,telefono);
+    closeModal('modal-cliente'); toast(`Cliente "${nombre}" guardado`);
+    allClientes=await db.getClientes();
+    if(currentPage==='clientes') refreshClientesTable();
+    if(currentPage==='dashboard') renderDashboard();
+  }catch(e){ toast('Error: '+e.message,'error'); }
+};
+
+// ════════════════════════════════════════════════════════
+//  MODAL: CITA (add + edit)
+// ════════════════════════════════════════════════════════
+async function openCitaModal(dateStr=null, preClientId=null, preHora=null, existingCita=null, prePeluqueroId=null){
+  document.getElementById('cita-edit-id').value=existingCita?existingCita.id:'';
+  document.getElementById('cita-modal-title').textContent=existingCita?'Editar Cita':'Nueva Cita';
+
+  // Peluqueros
+  try{ allPeluqueros=await db.getPeluqueros(); }catch(e){}
+  const selPel=document.getElementById('cita-peluquero');
+  selPel.innerHTML='<option value="">Seleccionar peluquero…</option>';
+  allPeluqueros.forEach(p=>{
+    const opt=document.createElement('option');
+    opt.value=p.id;
+    opt.textContent=p.nombre;
+    const preId=existingCita?existingCita.peluquero_id:prePeluqueroId;
+    if(preId&&p.id==preId) opt.selected=true;
+    else if(!preId&&allPeluqueros.length===1) opt.selected=true;
+    selPel.appendChild(opt);
+  });
+
+  // Cliente — autocomplete
+  try{ allClientes=await db.getClientes(); }catch(e){}
+  const searchInput = document.getElementById('cita-cliente-search');
+  const idInput     = document.getElementById('cita-cliente-id');
+  document.getElementById('cita-cliente-dropdown').style.display='none';
+  if(existingCita){
+    const cli=allClientes.find(c=>c.id==existingCita.cliente_id);
+    searchInput.value = cli?cli.nombre:'';
+    idInput.value     = existingCita.cliente_id||'';
+  } else if(preClientId){
+    const cli=allClientes.find(c=>c.id==preClientId);
+    searchInput.value = cli?cli.nombre:'';
+    idInput.value     = preClientId;
+  } else {
+    searchInput.value = '';
+    idInput.value     = '';
+  }
+
+  // Servicios
+  try{ allServicios=await db.getServicios(); }catch(e){}
+  const selSrv=document.getElementById('cita-servicio');
+  selSrv.innerHTML='<option value="">Seleccionar servicio…</option>';
+  allServicios.forEach(s=>{
+    const opt=document.createElement('option');
+    opt.value=s.nombre; opt.dataset.precio=s.precio; opt.dataset.duracion=s.duracion;
+    opt.textContent=`${s.nombre} — ${eur(s.precio)} · ${s.duracion}min`;
+    if(existingCita&&existingCita.servicio===s.nombre) opt.selected=true;
+    selSrv.appendChild(opt);
+  });
+
+  document.getElementById('cita-fecha').value=existingCita?existingCita.fecha:dateStr?dateStr:todayStr();
+  document.getElementById('cita-hora').value=existingCita?existingCita.hora:preHora?preHora:'10:00';
+  document.getElementById('cita-duracion').value=existingCita?existingCita.duracion:60;
+  updateCitaPriceHint();
+  openModal('modal-cita');
+  setTimeout(()=>selPel.focus(),60);
+}
+function updateCitaPriceHint(){
+  const opt=document.getElementById('cita-servicio').selectedOptions[0];
+  const hint=document.getElementById('cita-price-hint');
+  if(opt&&opt.dataset.precio){ hint.textContent=`Precio: ${eur(opt.dataset.precio)} · Duración sugerida: ${opt.dataset.duracion} min`; document.getElementById('cita-duracion').value=opt.dataset.duracion; }
+  else hint.textContent='';
+}
+document.getElementById('cita-servicio').onchange=updateCitaPriceHint;
+document.getElementById('btn-cancel-cita').onclick=()=>closeModal('modal-cita');
+document.getElementById('btn-save-cita').onclick=async()=>{
+  const editId   = document.getElementById('cita-edit-id').value;
+  const pelId    = document.getElementById('cita-peluquero').value;
+  const cid      = document.getElementById('cita-cliente-id').value;
+  const fecha    = document.getElementById('cita-fecha').value;
+  const hora     = document.getElementById('cita-hora').value;
+  const servicio = document.getElementById('cita-servicio').value;
+  const duracion = parseInt(document.getElementById('cita-duracion').value)||60;
+  const opt      = document.getElementById('cita-servicio').selectedOptions[0];
+  const precio   = opt&&opt.dataset.precio?parseFloat(opt.dataset.precio):0;
+  if(!pelId)  { toast('Selecciona un peluquero','error');  return; }
+  if(!cid)    { toast('Selecciona un cliente de la lista','error'); return; }
+  if(!fecha)  { toast('Introduce una fecha','error');      return; }
+  if(!hora)   { toast('Introduce una hora','error');       return; }
+  if(!servicio){ toast('Selecciona un servicio','error'); return; }
+  try{
+    if(editId){ await db.updateCita(editId,{cliente_id:cid,peluquero_id:pelId,fecha,hora,servicio,duracion,precio}); toast('Cita actualizada'); }
+    else{ await db.addCita(cid,pelId,fecha,hora,servicio,duracion,precio); toast(`Cita programada — ${servicio} (${eur(precio)})`); }
+    closeModal('modal-cita');
+    [allClientes,allCitas]=await Promise.all([db.getClientes(),db.getCitas()]);
+    if(currentPage==='dashboard') renderDashboard();
+    if(currentPage==='citas') refreshCitasTable();
+  }catch(e){ toast('Error: '+e.message,'error'); console.error(e); }
+};
+
+// ════════════════════════════════════════════════════════
+//  MODAL: SERVICIO
+// ════════════════════════════════════════════════════════
+function openServicioModal(s=null){
+  document.getElementById('srv-edit-id').value=s?s.id:'';
+  document.getElementById('srv-modal-title').textContent=s?'Editar Servicio':'Nuevo Servicio';
+  document.getElementById('srv-nombre').value=s?s.nombre:'';
+  document.getElementById('srv-precio').value=s?s.precio:'';
+  document.getElementById('srv-duracion').value=s?s.duracion:60;
+  openModal('modal-servicio');
+  setTimeout(()=>document.getElementById('srv-nombre').focus(),60);
+}
+document.getElementById('btn-cancel-srv').onclick=()=>closeModal('modal-servicio');
+document.getElementById('btn-save-srv').onclick=async()=>{
+  const editId=document.getElementById('srv-edit-id').value;
+  const nombre=document.getElementById('srv-nombre').value.trim();
+  const precio=parseFloat(document.getElementById('srv-precio').value)||0;
+  const duracion=parseInt(document.getElementById('srv-duracion').value)||60;
+  if(!nombre){ toast('Introduce un nombre','error'); return; }
+  try{
+    if(editId){ await db.updateServicio(editId,nombre,precio,duracion); toast('Servicio actualizado'); }
+    else{ await db.addServicio(nombre,precio,duracion); toast('Servicio añadido'); }
+    closeModal('modal-servicio');
+    allServicios=await db.getServicios();
+    if(currentPage==='servicios') refreshServiciosTable();
+  }catch(e){ toast('Error: '+e.message,'error'); }
+};
+
+// ════════════════════════════════════════════════════════
+//  WINDOW CONTROLS
+// ════════════════════════════════════════════════════════
+document.getElementById('wc-close').onclick=()=>ipcRenderer.send('close-app');
+document.getElementById('wc-min').onclick=()=>ipcRenderer.send('minimize-app');
+document.getElementById('wc-max').onclick=()=>ipcRenderer.send('maximize-app');
+ipcRenderer.on('window-maximized',(e,isMax)=>{
+  document.getElementById('wc-max').querySelector('.material-symbols-rounded').textContent=isMax?'filter_none':'crop_square';
+});
+
+// ════════════════════════════════════════════════════════
+//  WHATSAPP IPC
+// ════════════════════════════════════════════════════════
+document.getElementById('btn-wa-sidebar').onclick=()=>{ ipcRenderer.send('trigger-whatsapp-reminders'); toast('Enviando recordatorios...'); };
+ipcRenderer.on('whatsapp-reminder-sent',(e,{nombre})=>{ toast(`📱 Recordatorio enviado a ${nombre}`); });
+ipcRenderer.on('whatsapp-done',async(e,{count})=>{
+  if(count===0) toast('No hay citas mañana pendientes','error');
+  allCitas=await db.getCitas();
+  if(currentPage==='citas') refreshCitasTable();
+});
+
+// ════════════════════════════════════════════════════════
+//  NAV
+// ════════════════════════════════════════════════════════
+document.querySelectorAll('.nav-link[data-page]').forEach(btn=>{ btn.onclick=()=>navigate(btn.dataset.page); });
+
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+(async()=>{
+  try{
+    await db.initDB();
+    [allServicios,allPeluqueros]=await Promise.all([db.getServicios(),db.getPeluqueros()]);
+  }catch(e){ console.error('[RENDERER] Error init DB:',e); }
+  initClienteSearch(); // montar autocomplete una sola vez
+  navigate('dashboard');
+})();
+</script>
+</body>
+</html>
