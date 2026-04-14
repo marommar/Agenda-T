@@ -477,18 +477,25 @@
           <p style="color: var(--text2);">Contáctanos hoy para probar Agenda-T o adaptar una versión exclusiva para tu empresa.</p>
         </div>
         <div class="contact-form-wrap">
-          <form class="contact-form" onsubmit="event.preventDefault(); alert('Mensaje enviado. ¡Nos pondremos en contacto muy pronto!');">
+          <!-- Formulario conectado a Web3Forms: los mensajes llegan directamente al email registrado -->
+          <form class="contact-form" action="https://api.web3forms.com/submit" method="POST">
+            <!-- Clave de acceso secreta para vincular el formulario con tu cuenta Web3Forms -->
+            <input type="hidden" name="access_key" value="a181a1fa-da8c-4805-9586-36bdb4ac817b">
+            <!-- Asunto del email que recibirás en tu bandeja de entrada -->
+            <input type="hidden" name="subject" value="Nuevo contacto desde Agenda-T Web">
+            <!-- Página de redirección tras enviar el formulario -->
+            <input type="hidden" name="redirect" value="https://agenda-t-opal.vercel.app/?enviado=true">
             <div class="form-group">
               <label>Nombre / Empresa</label>
-              <input type="text" placeholder="Ej. Clínica Dental / Despacho Gómez" required>
+              <input type="text" name="nombre" placeholder="Ej. Clínica Dental / Despacho Gómez" required>
             </div>
             <div class="form-group">
               <label>Email</label>
-              <input type="email" placeholder="hola@empresa.com" required>
+              <input type="email" name="email" placeholder="hola@empresa.com" required>
             </div>
             <div class="form-group">
               <label>Mensaje</label>
-              <textarea rows="4" placeholder="¿En qué podemos ayudarte?" required></textarea>
+              <textarea rows="4" name="mensaje" placeholder="¿En qué podemos ayudarte?" required></textarea>
             </div>
             <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Enviar Mensaje</button>
           </form>
