@@ -1,5 +1,5 @@
 # Agenda-T 📅
-### v1.0.1
+### v1.0.1 — Sistema de Gestión Inteligente B2B
 
 Agenda-T es una solución de software premium compuesta por dos partes principales:
 1. **Aplicación de Escritorio (Desktop App):** Un sistema de gestión avanzado construido en Electron, diseñado para funcionar nativamente en Windows. Está enfocado a cualquier negocio que necesite gestionar citas: clínicas, consultas, despachos, salones, centros de estética, fisioterapia, etc.
@@ -33,104 +33,54 @@ Agenda-T/
 
 ## 📱 Aplicación de Escritorio (`app_escritorio`)
 
-Desarrollada con **Node.js, Electron y SQLite**. Sus características principales son:
+### Funcionalidades Estrella
+- **Agendas Multi-Profesional:** Columnas dinámicas generadas en tiempo real para separar visualmente las citas de cada trabajador o especialista del negocio.
+- **Smart CRM:** Buscador integrado predictivo que localiza clientes instantáneamente por nombre o número de teléfono.
+- **Analítica Financiera (Excel):** Exportación automática de archivos `.xlsx` estilizados con el cierre de caja y contabilidad mensual.
+- **Recordatorios por WhatsApp (API Mock):** Tareas programadas con `node-cron` que simulan el envío de recordatorios automáticos.
+- **Base de Datos Dinámica:** En producción, la app utiliza una base de datos aislada en `app.getPath('userData')`, asegurando que el software sea instalable y portable sin conflictos de permisos.
 
-### Funcionalidades
-- **Agendas Multi-Profesional:** Columnas dinámicas generadas en tiempo real para separar visualmente las citas de cada trabajador o especialista del negocio, con colores identificativos personalizados.
-- **Smart CRM:** Buscador integrado predictivo que localiza clientes instantáneamente por nombre o número de teléfono mediante autocompletado.
-- **Analítica Financiera (Excel):** Módulo autónomo que recopila un resumen financiero de las citas completadas y exporta automáticamente archivos `.xlsx` estilizados con la contabilidad mensual.
-- **Recordatorios por WhatsApp (API Mock):** Integración con Node-Cron para emitir recordatorios automatizados en segundo plano cada mañana a los números móviles de los clientes.
-- **Barra de ventana personalizada:** Interfaz frameless con controles de ventana propios (minimizar, maximizar, cerrar) y soporte de arrastre.
-- **Base de Datos Dinámica y Limpia:** En desarrollo utiliza la DB local. Tras compilar (modo empaquetado/producción), crea una base de datos `peluqueria.db` estéril desde cero en `AppData` del usuario para asegurar privacidad en las instalaciones de clientes.
-
-### Scripts (package.json)
-- `npm start`: Inicia el entorno de desarrollo.
-- `npm run package`: Genera un paquete ejecutable para Windows x64 con `electron-packager`.
-
----
-
-## 🌐 Sitio Web (`pagina_web`)
-
-Landing page moderna enfocada a conversiones B2B, desplegada automáticamente en **Vercel**.
-
-### Características
-- **Estética "Glassmorphism":** Diseñada con Vanilla CSS puro sin librerías externas. Efectos de cristal, degradados, animaciones 3D y modo oscuro nativo.
-- **SEO Optimizado:** Metadatos Open Graph estructurados, HTML5 semántico, etiquetas `<title>` y `<meta>` descriptivas.
-- **Descarga directa:** Botón principal conectado a **GitHub Releases** para descarga del instalador `Agenda-T-Setup.exe` (~150MB) desde CDN ultrarrápido.
-- **Formulario de Contacto Real:** Conectado a **Web3Forms** vía AJAX (Fetch API). Los mensajes de clientes llegan directamente al email del administrador sin backend propio.
-- **Toast de Confirmación:** Notificación visual elegante animada al enviar el formulario, con feedback de estado ("Enviando..." → "✅ ¡Mensaje enviado correctamente!").
-- **Menú Móvil Responsivo:** Menú hamburguesa con overlay a pantalla completa y desenfoque de fondo.
-- **Animaciones de Scroll:** Componentes con efecto `fade-up` gestionados por `IntersectionObserver`.
+### 🛠️ Configuración de Desarrollo
+1. Entra en la carpeta: `cd app_escritorio`
+2. Instala dependencias: `npm install`
+3. Ejecuta: `npm start`
+4. **Empaquetar:** `npm run package` seguido de `node build-installer.js`.
 
 ---
 
-## 🛠️ Tecnologías Empleadas
+## 🌐 Sitio Web Corporativo (`pagina_web`)
 
-### Backend / Core
-| Tecnología | Función |
-|---|---|
-| **Electron** | Contenedor de interfaz nativa para escritorio |
-| **Node.js** | Entorno de ejecución backend |
-| **SQLite3** | Base de datos local embebida |
-| **ExcelJS** | Generación de reportes Excel estilizados |
-| **Node-Cron** | Tareas programadas (recordatorios automáticos) |
-| **electron-packager** | Empaquetado del ejecutable Windows |
-| **electron-winstaller** | Generación del instalador Setup.exe |
+Landing page diseñada para maximizar la conversión y la confianza del cliente B2B.
 
-### Frontend Web
-| Tecnología | Función |
-|---|---|
-| **HTML5 Semántico** | Estructura accesible y optimizada para SEO |
-| **CSS Vanilla** | Glassmorphism, transformaciones 3D, variables CSS |
-| **JavaScript ES6+** | IntersectionObserver, Fetch API, FormData |
-| **Web3Forms** | Pasarela de formularios (emails sin backend) |
-| **Google Fonts (Inter)** | Tipografía profesional |
-| **Material Symbols** | Iconografía de Google Material Design |
-
-### Infraestructura
-| Servicio | Función |
-|---|---|
-| **GitHub** | Control de versiones y almacenamiento del código |
-| **GitHub Releases** | CDN de descarga del instalador (.exe) |
-| **Vercel** | Despliegue automático de la web (CI/CD) |
+### Características Técnicas
+- **Estética "Glassmorphism":** CSS moderno sin librerías externas (Zero Dependencies).
+- **Contacto Real (Web3Forms):** Integración AJAX que envía mensajes directamente al email configurado (`a181a1fa-da8c-4805-9586-36bdb4ac817b`).
+- **Feedback Visual:** Componente "Toast" animado que confirma el envío del formulario con estilo.
+- **Distribución vía GitHub:** El botón de descarga apunta directamente a los binarios de **GitHub Releases**, permitiendo actualizaciones centralizadas.
 
 ---
 
-## 💻 Instrucciones para entorno de desarrollo
+## 🚢 Despliegue y Distribución
 
-1. Clona el repositorio:
-   ```bash
-   git clone https://github.com/marommar/Agenda-T.git
-   cd Agenda-T
-   ```
-2. Instala las dependencias de la aplicación:
-   ```bash
-   cd app_escritorio
-   npm install
-   ```
-3. Levanta el entorno de desarrollo:
-   ```bash
-   npm start
-   ```
-4. Para empaquetar una nueva versión distribuible:
-   ```bash
-   npx electron-packager . Agenda-T --platform=win32 --arch=x64 --out=dist --overwrite --ignore="peluqueria\.db"
-   node build-installer.js
-   ```
-   *(Después, sube el nuevo `Agenda-T-Setup.exe` a GitHub Releases y Vercel lo servirá automáticamente).*
+### CI/CD con Vercel
+El proyecto está configurado para **Despliegue Continuo**. Cada vez que realices un `git push` a la rama `main`, Vercel detectará el cambio y actualizará la web en vivo automáticamente en cuestión de segundos.
+
+### Distribución de la App
+1. Genera el instalador localmente con `node build-installer.js`.
+2. Sube el archivo `Agenda-T-Setup.exe` a una nueva **Release** en tu cuenta de GitHub.
+3. Asegúrate de que el enlace en la web apunte a la URL de descarga de GitHub para que los clientes siempre bajen la última versión estable.
 
 ---
 
-## 📦 Despliegue
+## 🔧 Guía de Personalización
 
-El despliegue es completamente automático:
-1. Se hace `git push` a la rama `main`.
-2. **GitHub** almacena el código actualizado.
-3. **Vercel** detecta el cambio y re-despliega la web en segundos (CI/CD).
-4. Los instaladores se suben manualmente a **GitHub Releases** como binarios adjuntos.
+Para adaptar Agenda-T a un cliente específico:
+1. **Branding:** Modifica las variables de color en `:root` dentro de `página_web/index.html` y `app_escritorio/index.html`.
+2. **Formulario:** Cambia el `access_key` en el HTML de la web para recibir los correos en una cuenta diferente.
+3. **WhatsApp:** Para conectar con la API real de Meta o Twilio, sustituye la lógica en `app_escritorio/src/whatsapp.js` por una petición `fetch` a sus respectivos endpoints.
 
 ---
 
-## 📄 Licencia
-
-© 2026 Agenda-T. Todos los derechos reservados.
+## 📄 Licencia y Créditos
+Proyecto desarrollado bajo estándares modernos de ingeniería de software.
+© 2026 **Agenda-T**. Todos los derechos reservados.
