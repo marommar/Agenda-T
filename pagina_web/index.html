@@ -294,6 +294,18 @@
     .footer-links a:hover { color: var(--accent); }
     .footer-bottom { border-top: 1px solid var(--border2); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; color: var(--text3); font-size: 13px; }
 
+    /* Toast de confirmación */
+    .toast {
+      position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: linear-gradient(135deg, #059669, #34d399); color: #fff;
+      padding: 16px 32px; border-radius: 16px; font-size: 15px; font-weight: 700;
+      box-shadow: 0 12px 40px rgba(52, 211, 153, 0.4);
+      z-index: 9999; opacity: 0; pointer-events: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
     /* Responsivo */
     @media (max-width: 900px) {
       .nav-links { display: none; }
@@ -478,13 +490,11 @@
         </div>
         <div class="contact-form-wrap">
           <!-- Formulario conectado a Web3Forms: los mensajes llegan directamente al email registrado -->
-          <form class="contact-form" action="https://api.web3forms.com/submit" method="POST">
+          <form class="contact-form" id="contact-form">
             <!-- Clave de acceso secreta para vincular el formulario con tu cuenta Web3Forms -->
             <input type="hidden" name="access_key" value="a181a1fa-da8c-4805-9586-36bdb4ac817b">
             <!-- Asunto del email que recibirás en tu bandeja de entrada -->
             <input type="hidden" name="subject" value="Nuevo contacto desde Agenda-T Web">
-            <!-- Página de redirección tras enviar el formulario -->
-            <input type="hidden" name="redirect" value="https://agenda-t-opal.vercel.app/?enviado=true">
             <div class="form-group">
               <label>Nombre / Empresa</label>
               <input type="text" name="nombre" placeholder="Ej. Clínica Dental / Despacho Gómez" required>
@@ -497,12 +507,18 @@
               <label>Mensaje</label>
               <textarea rows="4" name="mensaje" placeholder="¿En qué podemos ayudarte?" required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Enviar Mensaje</button>
+            <button type="submit" id="form-btn" class="btn btn-primary" style="width: 100%; justify-content: center;">Enviar Mensaje</button>
           </form>
         </div>
       </div>
     </section>
   </main>
+
+  <!-- Notificación Toast flotante (aparece tras enviar el formulario) -->
+  <div class="toast" id="toast">
+    <span class="material-symbols-rounded">check_circle</span>
+    ¡Mensaje enviado correctamente!
+  </div>
 
   <!-- Footer -->
   <footer id="contacto">
@@ -607,6 +623,43 @@
         mobileMenu.classList.remove('open');
         mobileBtn.querySelector('.material-symbols-rounded').textContent = 'menu';
       });
+    });
+    /*
+      3. Envío AJAX del Formulario de Contacto:
+      Intercepta el submit nativo del formulario, envía los datos a Web3Forms
+      mediante fetch (sin recargar la página) y muestra un toast de confirmación.
+    */
+    const contactForm = document.getElementById('contact-form');
+    const toast = document.getElementById('toast');
+
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formBtn = document.getElementById('form-btn');
+      formBtn.textContent = 'Enviando...';
+      formBtn.disabled = true;
+
+      try {
+        const formData = new FormData(contactForm);
+        const response = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          body: formData
+        });
+        const result = await response.json();
+
+        if (result.success) {
+          // Mostrar toast de éxito
+          toast.classList.add('show');
+          contactForm.reset();
+          setTimeout(() => toast.classList.remove('show'), 4000);
+        } else {
+          alert('Hubo un error al enviar. Inténtalo de nuevo.');
+        }
+      } catch (err) {
+        alert('Error de conexión. Comprueba tu internet.');
+      }
+
+      formBtn.textContent = 'Enviar Mensaje';
+      formBtn.disabled = false;
     });
   </script>
 </body>
