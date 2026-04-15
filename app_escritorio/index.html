@@ -1922,7 +1922,7 @@
     </div>
     <div class="card">
       <div class="table-wrap">
-        <table><thead><tr><th>Cliente</th><th>Peluquero</th><th>Fecha · Hora</th><th>Servicio</th><th>Precio</th><th>Estado</th><th></th></tr></thead>
+        <table><thead><tr><th>Cliente</th><th>Personal</th><th>Fecha · Hora</th><th>Servicio</th><th>Precio</th><th>Estado</th><th></th></tr></thead>
         <tbody id="citas-tbody"></tbody></table>
       </div>
     </div>`;
@@ -2117,7 +2117,7 @@
         </div>
         <div class="card">
           <div class="section-title">Exportar Datos</div>
-          <p style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.6">Genera un Excel con todas las citas, clientes, peluqueros y resumen mensual.</p>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.6">Genera un Excel con todas las citas, clientes, informes de personal y resumen mensual.</p>
           <button class="btn btn-primary" style="width:100%;justify-content:center;" id="btn-gen-excel">
             <span class="material-symbols-rounded">table_view</span>Generar Reporte Excel
           </button>
@@ -2235,7 +2235,7 @@
       // Peluqueros
       try { allPeluqueros = await db.getPeluqueros(); } catch (e) { }
       const selPel = document.getElementById('cita-peluquero');
-      selPel.innerHTML = '<option value="">Seleccionar peluquero…</option>';
+      selPel.innerHTML = '<option value="">Seleccionar personal…</option>';
       allPeluqueros.forEach(p => {
         const opt = document.createElement('option');
         opt.value = p.id;
@@ -2301,7 +2301,7 @@
       const duracion = parseInt(document.getElementById('cita-duracion').value) || 60;
       const opt = document.getElementById('cita-servicio').selectedOptions[0];
       const precio = opt && opt.dataset.precio ? parseFloat(opt.dataset.precio) : 0;
-      if (!pelId) { toast('Selecciona un peluquero', 'error'); return; }
+      if (!pelId) { toast('Selecciona un miembro del personal', 'error'); return; }
       if (!cid) { toast('Selecciona un cliente de la lista', 'error'); return; }
       if (!fecha) { toast('Introduce una fecha', 'error'); return; }
       if (!hora) { toast('Introduce una hora', 'error'); return; }

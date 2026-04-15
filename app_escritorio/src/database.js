@@ -42,8 +42,8 @@ const DEFAULT_SERVICIOS = [
  */
 function initDB(userDataPath) {
   return new Promise((res, rej) => {
-    // Si se provee userDataPath usamos ese (Producción), si no usamos la carpeta local (Desarrollo)
-    const dbPath = userDataPath ? path.join(userDataPath, 'peluqueria.db') : path.join(__dirname, '..', 'peluqueria.db');
+    // Cambiamos el nombre a agenda-t.db para asegurar una distribución limpia y evitar conflictos con DBs viejas
+    const dbPath = userDataPath ? path.join(userDataPath, 'agenda-t.db') : path.join(__dirname, '..', 'agenda-t.db');
     db = new sqlite3.Database(dbPath, async (err) => {
       if (err) { rej(err); return; }
       console.log(`[DB] Conectado a la BD SQLite en: ${dbPath}`);

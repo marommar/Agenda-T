@@ -113,7 +113,7 @@ ipcMain.handle('generate-excel-report', async () => {
       { header: 'ID',          key: 'id',         width: 8  },
       { header: 'Fecha',       key: 'fecha',       width: 14 },
       { header: 'Hora',        key: 'hora',        width: 10 },
-      { header: 'Peluquero',   key: 'peluquero',   width: 20 },
+      { header: 'Personal',    key: 'peluquero',   width: 20 },
       { header: 'Cliente',     key: 'nombre',      width: 25 },
       { header: 'Teléfono',    key: 'telefono',    width: 18 },
       { header: 'Servicio',    key: 'servicio',    width: 25 },
