@@ -105,20 +105,22 @@ async function createTables() {
     `ALTER TABLE citas ADD COLUMN peluquero_id INTEGER DEFAULT 1`,
   ]) { try { await run(sql); } catch (_) {} }
 
-  // Seed peluquero por defecto
+  // Seed personal por defecto (Necesario para tener al menos una agenda funcional)
   const { n: np } = await get('SELECT COUNT(*) as n FROM peluqueros');
   if (np === 0) {
-    await run(`INSERT INTO peluqueros (nombre, color) VALUES ('Principal', '#7c3aed')`);
-    console.log('[DB] Peluquero por defecto creado');
+    await run(`INSERT INTO peluqueros (nombre, color) VALUES ('Personal Principal', '#7c3aed')`);
+    console.log('[DB] Registro de personal inicial creado');
   }
 
-  // Seed servicios
+  // Seed servicios (Desactivado para distribución limpia)
+  /*
   const { n: ns } = await get('SELECT COUNT(*) as n FROM servicios');
   if (ns === 0) {
     for (const s of DEFAULT_SERVICIOS)
       await run('INSERT INTO servicios (nombre, precio, duracion) VALUES (?,?,?)', [s.nombre, s.precio, s.duracion]);
     console.log('[DB] Catálogo de servicios inicializado');
   }
+  */
 
   console.log('[DB] Tablas verificadas/creadas');
 }
