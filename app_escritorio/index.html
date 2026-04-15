@@ -1713,17 +1713,17 @@
       const d = new Date(dateStr + 'T12:00:00');
       document.getElementById('day-title').textContent = d.toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
-      let citas = [], peluqueros = [];
+      let citas = [], personal = [];
       try {
-        [citas, peluqueros] = await Promise.all([db.getCitasByFecha(dateStr), db.getPeluqueros()]);
-        allPeluqueros = peluqueros;
+        [citas, personal] = await Promise.all([db.getCitasByFecha(dateStr), db.getPersonal()]);
+        allPersonal = personal;
       } catch (e) { console.error(e); }
 
       const totalRev = citas.reduce((s, c) => s + (c.precio || 0), 0);
       document.getElementById('day-meta').innerHTML = `
     <span class="badge ${isPast ? 'purple' : isTodayD ? 'amber' : 'green'}"><span class="badge-dot"></span>${isPast ? 'Finalizado' : isTodayD ? 'Hoy' : 'Próximo'}</span>
     <span style="font-size:12px;color:var(--green);font-weight:700">${eur(totalRev)} · ${citas.length} cita${citas.length !== 1 ? 's' : ''}</span>
-    <span style="font-size:11px;color:var(--text3)">${peluqueros.length} miembro${peluqueros.length !== 1 ? 's' : ''} del personal</span>`;
+    <span style="font-size:11px;color:var(--text3)">${personal.length} miembro${personal.length !== 1 ? 's' : ''} del personal</span>`;
 
       const btnNew = document.getElementById('btn-day-new-cita');
       btnNew.style.display = isPast ? 'none' : '';
@@ -1743,7 +1743,7 @@
       const colsEl = document.getElementById('day-stylist-cols');
       colsEl.innerHTML = '';
 
-      if (peluqueros.length === 0) {
+      if (personal.length === 0) {
         colsEl.innerHTML = `<div style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:var(--text3)">
       <span class="material-symbols-rounded" style="font-size:40px">person_off</span>
       <div>Sin personal configurado. <button class="btn btn-primary btn-sm" onclick="closeModal('modal-day');navigate('personal')"><span class="material-symbols-rounded">add</span>Añadir personal</button></div>
@@ -1751,18 +1751,18 @@
         openModal('modal-day'); return;
       }
 
-      peluqueros.forEach(pel => {
-        const citasPel = citas.filter(c => c.peluquero_id === pel.id);
+      personal.forEach(per => {
+        const citasPer = citas.filter(c => c.personal_id === per.id);
         const col = document.createElement('div');
         col.className = 'day-stylist-col';
 
         // Header
         const hdr = document.createElement('div');
         hdr.className = 'day-stylist-hdr';
-        hdr.style.borderBottomColor = pel.color;
-        hdr.style.color = pel.color;
-        hdr.innerHTML = `<span class="pel-dot" style="background:${pel.color}"></span>${pel.nombre}
-      <span style="font-size:9px;color:var(--text3);font-weight:400;margin-left:2px">(${citasPel.length})</span>`;
+        hdr.style.borderBottomColor = per.color;
+        hdr.style.color = per.color;
+        hdr.innerHTML = `<span class="pel-dot" style="background:${per.color}"></span>${per.nombre}
+      <span style="font-size:9px;color:var(--text3);font-weight:400;margin-left:2px">(${citasPer.length})</span>`;
         col.appendChild(hdr);
 
         // Area de eventos
@@ -1793,7 +1793,7 @@
             if (clickH < 8 || clickH > 21) return;
             const hora = `${String(clickH).padStart(2, '0')}:${String(clickM % 60).padStart(2, '0')}`;
             closeModal('modal-day');
-            openCitaModal(dateStr, null, hora, null, pel.id);
+            openCitaModal(dateStr, null, hora, null, per.id);
           });
           const hint = document.createElement('div');
           hint.className = 'tg-click-hint';
@@ -1802,7 +1802,7 @@
         }
 
         // Sin citas en esta columna
-        if (citasPel.length === 0) {
+        if (citasPer.length === 0) {
           const empty = document.createElement('div');
           empty.className = 'day-empty-col';
           empty.innerHTML = `<span class="material-symbols-rounded">event_available</span><div style="font-size:10px">${isPast ? 'Sin citas' : 'Libre'}</div>`;
@@ -1816,7 +1816,7 @@
           confirmada: `rgba(52,211,153,.13)`,
           cancelada: `rgba(248,113,113,.10)`,
         };
-        citasPel.forEach(c => {
+        citasPer.forEach(c => {
           const [hh, mm] = (c.hora || '10:00').split(':').map(Number);
           const mfs = (hh - 8) * 60 + mm;
           if (mfs < 0 || mfs > 840) return;
@@ -1826,7 +1826,7 @@
           block.className = 'tg-event';
           block.style.top = mfs + 'px';
           block.style.height = Math.min(durPx, 840 - mfs) + 'px';
-          block.style.borderColor = pel.color;
+          block.style.borderColor = per.color;
           block.style.background = bgByEstado[c.estado] || bgByEstado.pendiente;
 
           const estadoText = { pendiente: 'Pendiente', recordatorio_enviado: '📱 Recordatorio enviado', confirmada: '✅ Confirmada', cancelada: '❌ Cancelada' }[c.estado || 'pendiente'];
@@ -1846,7 +1846,7 @@
           }
 
           if (!isPast && c.estado !== 'cancelada') {
-            block.addEventListener('click', e => { if (e.target.closest('.wa-btns')) return; closeModal('modal-day'); openCitaModal(c.fecha, null, c.hora, c, c.peluquero_id); });
+            block.addEventListener('click', e => { if (e.target.closest('.wa-btns')) return; closeModal('modal-day'); openCitaModal(c.fecha, null, c.hora, c, c.personal_id); });
           }
           area.appendChild(block);
         });
@@ -1942,7 +1942,7 @@
         tb.innerHTML += `<tr>
       <td><div class="cell-main"><div class="avatar ${avatarClass(c.nombre)}" style="width:28px;height:28px;font-size:10px">${initials(c.nombre)}</div>
         <div><div class="cell-name">${c.nombre}</div><div class="cell-sub">${c.telefono || ''}</div></div></div></td>
-      <td>${c.peluquero_nombre ? `<span class="pel-tag"><span class="pel-dot" style="background:${c.peluquero_color || '#7c3aed'}"></span>${c.peluquero_nombre}</span>` : '—'}</td>
+      <td>${c.personal_nombre ? `<span class="pel-tag"><span class="pel-dot" style="background:${c.personal_color || '#7c3aed'}"></span>${c.personal_nombre}</span>` : '—'}</td>
       <td style="color:var(--text2)">${new Date(c.fecha + 'T12:00:00').toLocaleDateString('es', { day: 'numeric', month: 'short' })} · ${c.hora || ''}</td>
       <td style="color:var(--text2)">${c.servicio}<span style="color:var(--text3);font-size:10px;margin-left:4px">${c.duracion}min</span></td>
       <td style="font-weight:700;color:var(--green)">${eur(c.precio)}</td>
@@ -1955,7 +1955,7 @@
       });
       tb.querySelectorAll('.btn-view-day').forEach(btn => { btn.onclick = () => openDayModal(btn.dataset.fecha); });
       tb.querySelectorAll('.btn-edit-cita').forEach(btn => {
-        btn.onclick = async () => { const cita = allCitas.find(x => x.id == btn.dataset.id); if (cita) openCitaModal(cita.fecha, null, cita.hora, cita, cita.peluquero_id); };
+        btn.onclick = async () => { const cita = allCitas.find(x => x.id == btn.dataset.id); if (cita) openCitaModal(cita.fecha, null, cita.hora, cita, cita.personal_id); };
       });
     }
 
@@ -1963,10 +1963,10 @@
     //  PERSONAL (Antes Peluqueros)
     // ════════════════════════════════════════════════════════
     async function renderPersonal() {
-      try { allPeluqueros = await db.getPeluqueros(); } catch (e) { }
+      try { allPersonal = await db.getPersonal(); } catch (e) { }
       document.getElementById('content').innerHTML = `
     <div class="page-header">
-      <div><div class="page-title">Personal y Agendas</div><div class="page-sub">${allPeluqueros.length} miembro${allPeluqueros.length !== 1 ? 's' : ''} del personal, cada uno con su agenda independiente</div></div>
+      <div><div class="page-title">Personal y Agendas</div><div class="page-sub">${allPersonal.length} miembro${allPersonal.length !== 1 ? 's' : ''} del personal, cada uno con su agenda independiente</div></div>
       <button class="btn btn-primary" id="btn-nuevo-pel"><span class="material-symbols-rounded">person_add</span>Añadir Personal</button>
     </div>
     <div class="card">
@@ -1985,12 +1985,12 @@
       let citasAll = [];
       try { citasAll = await db.getCitas(); } catch (e) { }
       const citaCount = {};
-      citasAll.forEach(c => { citaCount[c.peluquero_id] = (citaCount[c.peluquero_id] || 0) + 1; });
-      if (allPeluqueros.length === 0) {
+      citasAll.forEach(c => { citaCount[c.personal_id] = (citaCount[c.personal_id] || 0) + 1; });
+      if (allPersonal.length === 0) {
         tb.innerHTML = `<tr><td colspan="4"><div class="empty"><span class="material-symbols-rounded">person_off</span><div class="empty-title">Sin personal registrado</div><div class="empty-sub">Añade al primer miembro para gestionar su agenda</div></div></td></tr>`;
         return;
       }
-      allPeluqueros.forEach(p => {
+      allPersonal.forEach(p => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
       <td><div class="cell-main"><span class="pel-dot" style="background:${p.color};width:14px;height:14px;border-radius:50%;flex-shrink:0"></span><div class="cell-name">${p.nombre}</div></div></td>
@@ -2009,7 +2009,7 @@
       tb.querySelectorAll('.btn-del-pel').forEach(btn => {
         btn.onclick = async () => {
           if (!confirm('¿Eliminar este registro? Solo es posible si no tiene citas asignadas.')) return;
-          try { await db.deletePeluquero(btn.dataset.id); toast('Registro eliminado'); allPeluqueros = await db.getPeluqueros(); refreshPersonalTable(); }
+          try { await db.deletePersonal(btn.dataset.id); toast('Registro eliminado'); allPersonal = await db.getPersonal(); refreshPersonalTable(); }
           catch (e) { toast(e.message, 'error'); }
         };
       });
@@ -2042,10 +2042,10 @@
       const color = document.getElementById('pel-color').value;
       if (!nombre) { toast('Introduce un nombre', 'error'); return; }
       try {
-        if (editId) { await db.updatePeluquero(editId, nombre, color); toast('Registro actualizado'); }
-        else { await db.addPeluquero(nombre, color); toast(`Personal "${nombre}" añadido`); }
+        if (editId) { await db.updatePersonal(editId, nombre, color); toast('Registro actualizado'); }
+        else { await db.addPersonal(nombre, color); toast(`Personal "${nombre}" añadido`); }
         closeModal('modal-peluquero');
-        allPeluqueros = await db.getPeluqueros();
+        allPersonal = await db.getPersonal();
         if (currentPage === 'personal') refreshPersonalTable();
       } catch (e) { toast('Error: ' + e.message, 'error'); }
     };
@@ -2232,17 +2232,17 @@
       document.getElementById('cita-edit-id').value = existingCita ? existingCita.id : '';
       document.getElementById('cita-modal-title').textContent = existingCita ? 'Editar Cita' : 'Nueva Cita';
 
-      // Peluqueros
-      try { allPeluqueros = await db.getPeluqueros(); } catch (e) { }
+      // Personal
+      try { allPersonal = await db.getPersonal(); } catch (e) { }
       const selPel = document.getElementById('cita-peluquero');
       selPel.innerHTML = '<option value="">Seleccionar personal…</option>';
-      allPeluqueros.forEach(p => {
+      allPersonal.forEach(p => {
         const opt = document.createElement('option');
         opt.value = p.id;
         opt.textContent = p.nombre;
-        const preId = existingCita ? existingCita.peluquero_id : prePeluqueroId;
+        const preId = existingCita ? existingCita.personal_id : prePersonalId;
         if (preId && p.id == preId) opt.selected = true;
-        else if (!preId && allPeluqueros.length === 1) opt.selected = true;
+        else if (!preId && allPersonal.length === 1) opt.selected = true;
         selPel.appendChild(opt);
       });
 
@@ -2307,7 +2307,7 @@
       if (!hora) { toast('Introduce una hora', 'error'); return; }
       if (!servicio) { toast('Selecciona un servicio', 'error'); return; }
       try {
-        if (editId) { await db.updateCita(editId, { cliente_id: cid, peluquero_id: pelId, fecha, hora, servicio, duracion, precio }); toast('Cita actualizada'); }
+        if (editId) { await db.updateCita(editId, { cliente_id: cid, personal_id: pelId, fecha, hora, servicio, duracion, precio }); toast('Cita actualizada'); }
         else { await db.addCita(cid, pelId, fecha, hora, servicio, duracion, precio); toast(`Cita programada — ${servicio} (${eur(precio)})`); }
         closeModal('modal-cita');
         [allClientes, allCitas] = await Promise.all([db.getClientes(), db.getCitas()]);
@@ -2376,7 +2376,7 @@
     (async () => {
       try {
         await db.initDB();
-        [allServicios, allPeluqueros] = await Promise.all([db.getServicios(), db.getPeluqueros()]);
+        [allServicios, allPersonal] = await Promise.all([db.getServicios(), db.getPersonal()]);
       } catch (e) { console.error('[RENDERER] Error init DB:', e); }
       initClienteSearch(); // montar autocomplete una sola vez
       navigate('dashboard');

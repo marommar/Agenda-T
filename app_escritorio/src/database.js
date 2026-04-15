@@ -21,18 +21,18 @@ function get(sql, p = []) {
 }
 
 const DEFAULT_SERVICIOS = [
-  { nombre: 'Corte de pelo',       precio: 18, duracion: 30  },
-  { nombre: 'Corte + Lavado',      precio: 28, duracion: 45  },
-  { nombre: 'Tinte completo',      precio: 55, duracion: 90  },
-  { nombre: 'Mechas',              precio: 70, duracion: 120 },
-  { nombre: 'Balayage',            precio: 90, duracion: 150 },
-  { nombre: 'Permanente',          precio: 65, duracion: 120 },
-  { nombre: 'Alisado',             precio: 80, duracion: 120 },
-  { nombre: 'Tratamiento capilar', precio: 35, duracion: 45  },
-  { nombre: 'Peinado',             precio: 25, duracion: 30  },
-  { nombre: 'Barba',               precio: 12, duracion: 20  },
-  { nombre: 'Manicura',            precio: 22, duracion: 45  },
-  { nombre: 'Pedicura',            precio: 28, duracion: 60  },
+  { nombre: 'Corte de pelo', precio: 18, duracion: 30 },
+  { nombre: 'Corte + Lavado', precio: 28, duracion: 45 },
+  { nombre: 'Tinte completo', precio: 55, duracion: 90 },
+  { nombre: 'Mechas', precio: 70, duracion: 120 },
+  { nombre: 'Balayage', precio: 90, duracion: 150 },
+  { nombre: 'Permanente', precio: 65, duracion: 120 },
+  { nombre: 'Alisado', precio: 80, duracion: 120 },
+  { nombre: 'Tratamiento capilar', precio: 35, duracion: 45 },
+  { nombre: 'Peinado', precio: 25, duracion: 30 },
+  { nombre: 'Barba', precio: 12, duracion: 20 },
+  { nombre: 'Manicura', precio: 22, duracion: 45 },
+  { nombre: 'Pedicura', precio: 28, duracion: 60 },
 ];
 
 /**
@@ -59,11 +59,11 @@ function initDB(userDataPath) {
  * de manera transparente al inicio. Carga también la capa Seed de servicios.
  */
 async function createTables() {
-  // ── Peluqueros ──
-  await run(`CREATE TABLE IF NOT EXISTS peluqueros (
-    id     INTEGER PRIMARY KEY AUTOINCREMENT,
-    nombre TEXT NOT NULL,
-    color  TEXT DEFAULT '#7c3aed'
+  // ── Personal / Profesionales ──
+  await run(`CREATE TABLE IF NOT EXISTS personal (
+    id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre  TEXT    NOT NULL,
+    color   TEXT    DEFAULT '#7c3aed'
   )`);
 
   // ── Clientes ──
@@ -85,30 +85,30 @@ async function createTables() {
   await run(`CREATE TABLE IF NOT EXISTS citas (
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
     cliente_id   INTEGER,
-    peluquero_id INTEGER DEFAULT 1,
-    fecha        TEXT,
-    hora         TEXT    DEFAULT '10:00',
+    personal_id  INTEGER DEFAULT 1,
+    fecha        TEXT    NOT NULL,
+    hora         TEXT    NOT NULL,
     servicio     TEXT,
     duracion     INTEGER DEFAULT 60,
     precio       REAL    DEFAULT 0,
     estado       TEXT    DEFAULT 'pendiente',
-    FOREIGN KEY(cliente_id)   REFERENCES clientes(id),
-    FOREIGN KEY(peluquero_id) REFERENCES peluqueros(id)
+    FOREIGN KEY(cliente_id) REFERENCES clientes(id),
+    FOREIGN KEY(personal_id) REFERENCES personal(id)
   )`);
 
-  // Migraciones
+  // Migraciones (Por si acaso alguien viene de versiones intermedias v1.0.1/v1.0.2)
   for (const sql of [
     `ALTER TABLE citas ADD COLUMN hora         TEXT    DEFAULT '10:00'`,
     `ALTER TABLE citas ADD COLUMN duracion     INTEGER DEFAULT 60`,
     `ALTER TABLE citas ADD COLUMN precio       REAL    DEFAULT 0`,
     `ALTER TABLE citas ADD COLUMN estado       TEXT    DEFAULT 'pendiente'`,
-    `ALTER TABLE citas ADD COLUMN peluquero_id INTEGER DEFAULT 1`,
-  ]) { try { await run(sql); } catch (_) {} }
+    `ALTER TABLE citas ADD COLUMN personal_id INTEGER DEFAULT 1`,
+  ]) { try { await run(sql); } catch (_) { } }
 
   // Seed personal por defecto (Necesario para tener al menos una agenda funcional)
-  const { n: np } = await get('SELECT COUNT(*) as n FROM peluqueros');
+  const { n: np } = await get('SELECT COUNT(*) as n FROM personal');
   if (np === 0) {
-    await run(`INSERT INTO peluqueros (nombre, color) VALUES ('Personal Principal', '#7c3aed')`);
+    await run(`INSERT INTO personal (nombre, color) VALUES ('Personal Principal', '#7c3aed')`);
     console.log('[DB] Registro de personal inicial creado');
   }
 
@@ -130,18 +130,18 @@ async function createTables() {
 // Sirven para aislar de consultas SQL al hilo principal del Main y al Frontend.
 // ============================================================================
 
-// ── PROFESIONALES (Antes Peluqueros) ───────────────────────────────────
-function getPeluqueros() { return all('SELECT * FROM peluqueros ORDER BY id ASC'); }
-function addPeluquero(nombre, color) {
-  return run('INSERT INTO peluqueros (nombre, color) VALUES (?,?)', [nombre, color]).then(r => r.lastID);
+// ── PERSONAL (Profesionales) ───────────────────────────────────
+function getPersonal() { return all('SELECT * FROM personal ORDER BY id ASC'); }
+function addPersonal(nombre, color) {
+  return run('INSERT INTO personal (nombre, color) VALUES (?,?)', [nombre, color]).then(r => r.lastID);
 }
-function updatePeluquero(id, nombre, color) {
-  return run('UPDATE peluqueros SET nombre=?, color=? WHERE id=?', [nombre, color, id]);
+function updatePersonal(id, nombre, color) {
+  return run('UPDATE personal SET nombre=?, color=? WHERE id=?', [nombre, color, id]);
 }
-async function deletePeluquero(id) {
-  const { n } = await get('SELECT COUNT(*) as n FROM citas WHERE peluquero_id=?', [id]);
+async function deletePersonal(id) {
+  const { n } = await get('SELECT COUNT(*) as n FROM citas WHERE personal_id=?', [id]);
   if (n > 0) throw new Error(`No se puede eliminar: tiene ${n} cita(s) asignada(s)`);
-  return run('DELETE FROM peluqueros WHERE id=?', [id]);
+  return run('DELETE FROM personal WHERE id=?', [id]);
 }
 
 // ── CLIENTES ─────────────────────────────────────────────
@@ -165,10 +165,10 @@ const CITAS_SELECT = `
   SELECT
     c.id, c.fecha, c.hora, c.servicio, c.duracion, c.precio, c.estado,
     c.cliente_id,   cl.nombre,   cl.telefono,
-    c.peluquero_id, p.nombre  AS peluquero_nombre, p.color AS peluquero_color
+    c.personal_id, p.nombre  AS personal_nombre, p.color AS personal_color
   FROM citas c
-  JOIN clientes  cl ON c.cliente_id   = cl.id
-  LEFT JOIN peluqueros p  ON c.peluquero_id = p.id
+  LEFT JOIN clientes cl   ON c.cliente_id = cl.id
+  LEFT JOIN personal p    ON c.personal_id = p.id
 `;
 
 function getCitas() {
@@ -177,17 +177,17 @@ function getCitas() {
 function getCitasByFecha(fecha) {
   return all(CITAS_SELECT + ' WHERE c.fecha=? ORDER BY c.hora ASC', [fecha]);
 }
-function addCita(cliente_id, peluquero_id, fecha, hora, servicio, duracion, precio) {
+function addCita(cliente_id, personal_id, fecha, hora, servicio, duracion, precio) {
   return run(
-    `INSERT INTO citas (cliente_id, peluquero_id, fecha, hora, servicio, duracion, precio, estado)
-     VALUES (?,?,?,?,?,?,?,'pendiente')`,
-    [cliente_id, peluquero_id || 1, fecha, hora || '10:00', servicio, duracion || 60, precio || 0]
+    `INSERT INTO citas (cliente_id, personal_id, fecha, hora, servicio, duracion, precio, estado)
+     VALUES (?,?,?,?,?,?,?, 'pendiente')`,
+    [cliente_id, personal_id || 1, fecha, hora || '10:00', servicio, duracion || 60, precio || 0]
   ).then(r => r.lastID);
 }
-function updateCita(id, { cliente_id, peluquero_id, fecha, hora, servicio, duracion, precio }) {
+function updateCita(id, { cliente_id, personal_id, fecha, hora, servicio, duracion, precio }) {
   return run(
-    `UPDATE citas SET cliente_id=?, peluquero_id=?, fecha=?, hora=?, servicio=?, duracion=?, precio=? WHERE id=?`,
-    [cliente_id, peluquero_id || 1, fecha, hora, servicio, duracion, precio, id]
+    `UPDATE citas SET cliente_id=?, personal_id=?, fecha=?, hora=?, servicio=?, duracion=?, precio=? WHERE id=?`,
+    [cliente_id, personal_id || 1, fecha, hora, servicio, duracion, precio, id]
   );
 }
 function updateCitaEstado(id, estado) {
@@ -195,7 +195,7 @@ function updateCitaEstado(id, estado) {
 }
 function getCitasProximas24h() {
   const t = new Date(); t.setDate(t.getDate() + 1);
-  const f = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
+  const f = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`;
   return all(`${CITAS_SELECT} WHERE c.fecha=? AND c.estado='pendiente'`, [f]);
 }
 
@@ -204,20 +204,20 @@ function getIngresosDelDia(fecha) {
   return get('SELECT COALESCE(SUM(precio),0) as total FROM citas WHERE fecha=?', [fecha]).then(r => r?.total || 0);
 }
 function getIngresosMes(year, month) {
-  const s = `${year}-${String(month).padStart(2,'0')}-01`;
-  const e = `${year}-${String(month).padStart(2,'0')}-31`;
+  const s = `${year}-${String(month).padStart(2, '0')}-01`;
+  const e = `${year}-${String(month).padStart(2, '0')}-31`;
   return get('SELECT COALESCE(SUM(precio),0) as total FROM citas WHERE fecha>=? AND fecha<=?', [s, e]).then(r => r?.total || 0);
 }
 function getCitasPorDia(year, month) {
-  const s = `${year}-${String(month).padStart(2,'0')}-01`;
-  const e = `${year}-${String(month).padStart(2,'0')}-31`;
+  const s = `${year}-${String(month).padStart(2, '0')}-01`;
+  const e = `${year}-${String(month).padStart(2, '0')}-31`;
   return all(`SELECT fecha, COALESCE(SUM(precio),0) as total, COUNT(*) as num
               FROM citas WHERE fecha>=? AND fecha<=? GROUP BY fecha`, [s, e]);
 }
 
 module.exports = {
   initDB,
-  getPeluqueros, addPeluquero, updatePeluquero, deletePeluquero,
+  getPersonal, addPersonal, updatePersonal, deletePersonal,
   getClientes, addCliente,
   getServicios, addServicio, updateServicio, deleteServicio,
   getCitas, getCitasByFecha, addCita, updateCita, updateCitaEstado, getCitasProximas24h,

@@ -113,7 +113,7 @@ ipcMain.handle('generate-excel-report', async () => {
       { header: 'ID',          key: 'id',         width: 8  },
       { header: 'Fecha',       key: 'fecha',       width: 14 },
       { header: 'Hora',        key: 'hora',        width: 10 },
-      { header: 'Personal',    key: 'peluquero',   width: 20 },
+      { header: 'Personal',    key: 'personal',    width: 20 },
       { header: 'Cliente',     key: 'nombre',      width: 25 },
       { header: 'Teléfono',    key: 'telefono',    width: 18 },
       { header: 'Servicio',    key: 'servicio',    width: 25 },
@@ -130,7 +130,7 @@ ipcMain.handle('generate-excel-report', async () => {
     citas.forEach(c => {
       wsCitas.addRow({
         id: c.id, fecha: c.fecha, hora: c.hora||'',
-        peluquero: c.peluquero_nombre || 'N/A',
+        personal: c.personal_nombre || 'N/A',
         nombre: c.nombre, telefono: c.telefono||'',
         servicio: c.servicio, duracion: `${c.duracion} min`,
         precio: c.precio, estado: c.estado,
