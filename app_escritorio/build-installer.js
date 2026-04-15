@@ -7,10 +7,10 @@ async function build() {
     await electronInstaller.createWindowsInstaller({
       appDirectory: path.join(__dirname, 'dist/Agenda-T-win32-x64'),
       outputDirectory: path.join(__dirname, 'dist/installer'),
-      authors: 'Luxe Salon',
+      authors: 'Agenda-T',
       exe: 'Agenda-T.exe',
       name: 'AgendaT',
-      description: 'Luxe Salon Agenda System',
+      description: 'Sistema de Gestión Agenda-T',
       setupExe: 'Agenda-T-Setup.exe'
     });
     console.log('¡Instalador creado con éxito!');

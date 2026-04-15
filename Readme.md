@@ -1,5 +1,5 @@
 # Agenda-T 📅
-### v1.0.1 — Sistema de Gestión Inteligente B2B
+### v1.0.2 — Sistema de Gestión Inteligente B2B
 
 Agenda-T es una solución de software premium compuesta por dos partes principales:
 1. **Aplicación de Escritorio (Desktop App):** Un sistema de gestión avanzado construido en Electron, diseñado para funcionar nativamente en Windows. Está enfocado a cualquier negocio que necesite gestionar citas: clínicas, consultas, despachos, salones, centros de estética, fisioterapia, etc.

@@ -1,11 +1,12 @@
 {
   "name": "agenda-t",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Agenda-T Desktop Application",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder -w"
+    "build": "electron-builder -w",
+    "package": "electron-packager . Agenda-T --platform=win32 --arch=x64 --out=dist --overwrite"
   },
   "build": {
     "appId": "com.agenda-t.app",
