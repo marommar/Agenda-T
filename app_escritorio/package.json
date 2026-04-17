@@ -1,6 +1,6 @@
 {
   "name": "agenda-t",
-  "version": "1.0.3",
+  "version": "1.0.2",
   "description": "Agenda-T Desktop Application",
   "main": "main.js",
   "scripts": {
