@@ -1,0 +1,209 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Webhook').item.json.body.chatInput }}",
+        "options": {
+          "systemMessage": "= {{ $json.system_prompt }}",
+          "enableStreaming": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -32,
+        -80
+      ],
+      "id": "693f31be-02ad-47d8-bdde-8b38c399afcf",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        80
+      ],
+      "id": "722aef41-f57a-4a00-a89a-b337dce7b7d6",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "BVRWsSFy4cJthpty",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "clientes_saas",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "tenant_id",
+              "keyValue": "={{ $json.body.tenant_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        -80
+      ],
+      "id": "6ab3da28-bb72-4e9f-a8ba-8ba677ded043",
+      "name": "Get a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "OBIx6zECSIkdV9JN",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "sessionid",
+        "tableName": "=n8n_chat_histories"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        64,
+        192
+      ],
+      "id": "c12b354f-db4d-4c53-9220-aed3a5cf382f",
+      "name": "Postgres Chat Memory",
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "nf3K8D2mAVmFc6T3",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Usa esta herramienta SIEMPRE que el usuario mencione un correo electrónico. Acepta un argumento llamado 'email'. Devuelve el nombre del usuario y su categoría (Empleado o Cliente) desde Odoo.\"",
+        "method": "POST",
+        "url": "={{ $('Get a row').item.json.odoo_url }}/jsonrpc",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"call\",\n  \"params\": {\n    \"service\": \"object\",\n    \"method\": \"execute_kw\",\n    \"args\": [\n      \"{{ $('Get a row').item.json.odoo_db }}\",\n      2,\n      \"{{ $('Get a row').item.json.odoo_api_key }}\",\n      \"res.partner\",\n      \"search_read\",\n      [[[\"email\", \"=\", \"{{ $fromAI('email', 'El correo electrónico del usuario') }}\"]]],\n{\"fields\": [\"name\", \"email\", \"category_id\"]}\n    ]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        32
+      ],
+      "id": "9f647f77-699e-42a9-9e98-4de68b76b5c4",
+      "name": "Validar_usuario_odoo"
+    },
+    {
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -432,
+        -80
+      ],
+      "id": "299cbaa8-40c9-40e4-920a-aa524d875e93",
+      "name": "When chat message received",
+      "webhookId": "b236da4c-af96-4a6d-bd8d-ed9213d868dc"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar_usuario_odoo": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Get a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9f7f8cf1-088b-4ef2-a486-147b10ab25a8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "28982cee07ec163977a68111088da2e515abf8c252002c04a8e64434f005ba23"
+  },
+  "id": "lVScQea5DB1Dugph",
+  "tags": [
+    {
+      "updatedAt": "2026-04-22T12:41:23.406Z",
+      "createdAt": "2026-04-22T12:41:23.406Z",
+      "id": "NveNv6vW8pMM0PHo",
+      "name": "saas odoo"
+    }
+  ]
+}

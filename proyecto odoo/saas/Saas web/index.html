@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odoo Integrations | AI Architecture</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- n8n Chat Styles -->
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+</head>
+
+<body class="relative bg-[#030712]">
+
+    <!-- Background Grid -->
+    <div class="absolute inset-0 bg-grid z-0 h-[60vh] pointer-events-none"></div>
+
+    <!-- Header / Navigation -->
+    <header
+        class="py-5 px-8 flex justify-between items-center relative z-50 border-b border-[#1e293b] bg-[#030712]/90 backdrop-blur-md">
+        <div class="flex items-center gap-3">
+            <svg class="w-6 h-6 text-[#3b82f6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                    d="M4 7v10c0 2 1.5 3 3.5 3h9c2 0 3.5-1 3.5-3V7c0-2-1.5-3-3.5-3h-9C5.5 4 4 5 4 7zm0 4h16m-8 4h3">
+                </path>
+            </svg>
+            <h1 class="text-lg font-semibold tracking-wide text-white">Odoo Integrations</h1>
+        </div>
+        <nav class="hidden md:flex gap-6">
+            <a href="#arquitectura" class="nav-link">Arquitectura</a>
+            <a href="#flujo" class="nav-link">Flujo de Datos</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section
+        class="min-h-[70vh] flex flex-col items-center justify-center pt-20 px-8 relative z-10 border-b border-[#1e293b] text-center">
+        <div class="max-w-4xl mx-auto">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded border border-[#1e293b] bg-[#0f172a] text-xs font-medium text-[#94a3b8] tracking-wide uppercase">
+                <span class="w-2 h-2 rounded-full bg-[#10b981]"></span>
+                Sistema Operativo
+            </div>
+            <h2 class="text-4xl md:text-6xl font-bold mb-6 text-white leading-tight tracking-tight">
+                Integración de Asistente IA <br> para Odoo ERP.
+            </h2>
+            <p class="text-lg md:text-xl text-[#94a3b8] mb-12 max-w-2xl leading-relaxed">
+                Despliegue de infraestructura automatizada. Conexión segura a la base de datos a través de API JSON-RPC,
+                procesamiento de lenguaje natural y persistencia de memoria.
+            </p>
+
+            <!-- Instructions to use the bot -->
+            <div class="inline-block border border-[#10b981]/30 bg-[#10b981]/10 px-8 py-5 rounded-lg text-left">
+                <div class="flex items-center gap-4">
+                    <div class="bg-[#10b981]/20 p-3 rounded-full shrink-0">
+                        <svg class="w-6 h-6 text-[#10b981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-medium mb-1">El Asistente está en línea</h4>
+                        <p class="text-sm text-[#94a3b8]">
+                            Haz clic en el icono de chat situado en la esquina inferior derecha de la pantalla para realizar tu alta en el sistema.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Arquitectura Section -->
+    <section id="arquitectura" class="py-20 px-8 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <h3 class="text-2xl font-semibold mb-10 text-white text-center">Componentes del Sistema</h3>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Component 1 -->
+                <div class="b2b-card p-6 accent-top">
+                    <h4 class="text-lg font-medium text-white mb-2">Conexión Odoo</h4>
+                    <p class="text-sm text-[#94a3b8] leading-relaxed">
+                        Consultas en tiempo real de clientes, inventario y presupuestos a través de Odoo API JSON-RPC
+                        utilizando credenciales aisladas por tenant.
+                    </p>
+                </div>
+
+                <!-- Component 2 -->
+                <div class="b2b-card p-6">
+                    <h4 class="text-lg font-medium text-white mb-2">Motor NLP</h4>
+                    <p class="text-sm text-[#94a3b8] leading-relaxed">
+                        Implementación de modelos de lenguaje grandes (LLMs) para la orquestación y el procesamiento de
+                        intenciones de usuarios y empleados.
+                    </p>
+                </div>
+
+                <!-- Component 3 -->
+                <div class="b2b-card p-6">
+                    <h4 class="text-lg font-medium text-white mb-2">Persistencia</h4>
+                    <p class="text-sm text-[#94a3b8] leading-relaxed">
+                        Almacenamiento de historiales de conversación y recuperación de contexto (RAG) empleando bases
+                        de datos PostgreSQL y Supabase.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workflow Section -->
+    <section id="flujo" class="py-20 px-8 relative z-10 border-t border-[#1e293b] bg-[#020617]">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col lg:flex-row gap-12">
+                <div class="lg:w-1/2">
+                    <h3 class="text-2xl font-semibold mb-6 text-white">Flujo de Datos (Workflow)</h3>
+                    <p class="text-[#94a3b8] mb-8 text-base leading-relaxed">
+                        El sistema opera bajo un entorno de ejecución seguro (n8n). Cada solicitud entrante se procesa
+                        bajo el siguiente esquema:
+                    </p>
+                    <div class="space-y-6">
+                        <div>
+                            <h5 class="text-white text-sm font-medium mb-1">1. Identificación Multi-Tenant</h5>
+                            <p class="text-sm text-[#64748b]">Extracción del <code>tenant_id</code> del payload para
+                                aislar entornos.</p>
+                        </div>
+                        <div>
+                            <h5 class="text-white text-sm font-medium mb-1">2. Recuperación de Entorno</h5>
+                            <p class="text-sm text-[#64748b]">Consulta a Supabase para recuperar la URL, BD y API Key
+                                específicos del cliente.</p>
+                        </div>
+                        <div>
+                            <h5 class="text-white text-sm font-medium mb-1">3. Ejecución Autónoma</h5>
+                            <p class="text-sm text-[#64748b]">El agente IA ejecuta herramientas dinámicas contra Odoo
+                                (ej. <code>search_read</code> sobre <code>res.partner</code>) y formula la respuesta
+                                final.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:w-1/2 w-full">
+                    <!-- Technical Console Representation -->
+                    <div class="terminal-block p-6 text-sm text-[#94a3b8] shadow-2xl">
+                        <div class="flex gap-2 mb-4">
+                            <div class="w-3 h-3 rounded-full bg-[#ef4444]"></div>
+                            <div class="w-3 h-3 rounded-full bg-[#eab308]"></div>
+                            <div class="w-3 h-3 rounded-full bg-[#22c55e]"></div>
+                        </div>
+                        <div class="space-y-2">
+                            <div><span class="text-[#3b82f6]">INFO</span> [Agent] Incoming webhook triggered</div>
+                            <div><span class="text-[#3b82f6]">INFO</span> [Supabase] Fetching config for tenant_id:
+                                <span class="text-[#10b981]">1</span></div>
+                            <div><span class="text-[#3b82f6]">INFO</span> [Tool] Executing <span
+                                    class="text-white">Validar_usuario_odoo</span></div>
+                            <div><span class="text-[#eab308]">WARN</span> [RPC] Requesting res.partner data</div>
+                            <div class="pt-2 border-t border-[#1e293b] mt-2">
+                                <span class="text-[#a855f7]">Payload response:</span><br>
+                                <pre class="mt-2 text-[#cbd5e1] overflow-x-auto">
+[
+  {
+    "name": "Cliente Demo",
+    "email": "demo@empresa.com",
+    "category_id": [1, "Cliente Activo"]
+  }
+]</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer
+        class="py-8 px-8 border-t border-[#1e293b] bg-[#030712] text-sm text-[#64748b] flex justify-between items-center">
+        <p>Odoo Integrations Architecture.</p>
+        <p>System Status: <span class="text-[#10b981]">● Online</span></p>
+    </footer>
+
+    <!-- n8n Chatbot Integration -->
+    <script type="module">
+        import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+
+        createChat({
+            webhookUrl: 'http://localhost:5678/webhook/f42d7a47-5993-4881-9849-1a0eefc705dc/chat',
+            mode: 'window',
+            showWelcomeScreen: true,
+            i18n: {
+                en: { // Por ahora n8n usa 'en' como clave por defecto pero puedes escribir en español
+                    title: 'Odoo Integrations',
+                    subtitle: 'Integra tu nuevo chatbot con odoo',
+                    inputPlaceholder: 'Escribe para comenzar',
+                    footer: 'Odoo Integrations © 2026'
+                }
+            },
+
+            // Tus mensajes iniciales personalizados
+            initialMessages: [
+                '¡Hola! 👋',
+                'Voy a necesitar unos datos para darte de alta en nuestro saas, ¿quieres comenzar?'
+            ]
+        });
+    </script>
+</body>
+
+</html>
